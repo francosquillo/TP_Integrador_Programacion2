@@ -46,4 +46,8 @@ public class Pedido extends Base{
 
     public void setPago(FormaPago pago) {this.pago = pago;}
 
+    public List<DetallePedido> getDetalles() {return detalles;}
+
+    public void setDetalles(List<DetallePedido> detalles) {this.detalles = detalles;}
+    
 }
