@@ -1,9 +1,11 @@
+package dao;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import entities.Producto;
 
-public class ProductoDAO implements BaseDAO<Producto>{
+public class ProductoDAO implements BaseDAO<Producto> {
 
     private List<Producto> nombreBaseDB = new ArrayList<>();
     private Long idAutoIncrement = 1L;
@@ -12,11 +14,11 @@ public class ProductoDAO implements BaseDAO<Producto>{
     public void create(Producto entity) {
         entity.setId(idAutoIncrement++);
         nombreBaseDB.add(entity);
-        System.out.println("Producto guardado");        
+        System.out.println("Producto guardado");
     }
 
     @Override
-    public List<Producto> readAll(){
+    public List<Producto> readAll() {
         List<Producto> productos = new ArrayList<>();
         for (Producto p : nombreBaseDB) {
             if (!p.isEliminado()) {
@@ -27,7 +29,7 @@ public class ProductoDAO implements BaseDAO<Producto>{
     }
 
     @Override
-    public Producto readByID(Long id){
+    public Producto readByID(Long id) {
         for (Producto p : nombreBaseDB) {
             if (p.getId().equals(id) && !p.isEliminado()) {
                 return p;
@@ -37,7 +39,7 @@ public class ProductoDAO implements BaseDAO<Producto>{
     }
 
     @Override
-    public void update(Producto entity){
+    public void update(Producto entity) {
         Producto existente = readByID(entity.getId());
         if (existente != null) {
             existente.setNombre(entity.getNombre());
@@ -51,7 +53,7 @@ public class ProductoDAO implements BaseDAO<Producto>{
     }
 
     @Override
-    public void delete(Long id){
+    public void delete(Long id) {
         Producto existetnte = readByID(id);
         if (existetnte != null) {
             existetnte.setEliminado(true);

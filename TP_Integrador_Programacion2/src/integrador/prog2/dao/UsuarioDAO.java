@@ -1,9 +1,11 @@
+package dao;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import entities.Usuario;
 
-public class UsuarioDAO implements BaseDAO<Usuario>{
+public class UsuarioDAO implements BaseDAO<Usuario> {
 
     private List<Usuario> nombreBaseDB = new ArrayList<>();
     private Long idAutoIncrement = 1L;
@@ -19,11 +21,11 @@ public class UsuarioDAO implements BaseDAO<Usuario>{
 
         entity.setId(idAutoIncrement++);
         nombreBaseDB.add(entity);
-        System.out.println("Usuario guardado");        
+        System.out.println("Usuario guardado");
     }
 
     @Override
-    public List<Usuario> readAll(){
+    public List<Usuario> readAll() {
         List<Usuario> usuarios = new ArrayList<>();
         for (Usuario u : nombreBaseDB) {
             if (!u.isEliminado()) {
@@ -34,7 +36,7 @@ public class UsuarioDAO implements BaseDAO<Usuario>{
     }
 
     @Override
-    public Usuario readByID(Long id){
+    public Usuario readByID(Long id) {
         for (Usuario u : nombreBaseDB) {
             if (u.getId().equals(id) && !u.isEliminado()) {
                 return u;
@@ -44,7 +46,7 @@ public class UsuarioDAO implements BaseDAO<Usuario>{
     }
 
     @Override
-    public void update(Usuario entity){
+    public void update(Usuario entity) {
         Usuario existente = readByID(entity.getId());
         if (existente != null) {
             existente.setNombre(entity.getNombre());
@@ -58,7 +60,7 @@ public class UsuarioDAO implements BaseDAO<Usuario>{
     }
 
     @Override
-    public void delete(Long id){
+    public void delete(Long id) {
         Usuario existetnte = readByID(id);
         if (existetnte != null) {
             existetnte.setEliminado(true);

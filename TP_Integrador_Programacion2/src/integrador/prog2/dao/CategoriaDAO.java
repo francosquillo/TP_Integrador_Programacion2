@@ -1,9 +1,11 @@
+package dao;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import entities.Categoria;
 
-public class CategoriaDAO implements BaseDAO<Categoria>{
+public class CategoriaDAO implements BaseDAO<Categoria> {
 
     private List<Categoria> nombreBaseDB = new ArrayList<>();
     private Long idAutoIncrement = 1L;
@@ -12,11 +14,11 @@ public class CategoriaDAO implements BaseDAO<Categoria>{
     public void create(Categoria entity) {
         entity.setId(idAutoIncrement++);
         nombreBaseDB.add(entity);
-        System.out.println("Categoria guardada");        
+        System.out.println("Categoria guardada");
     }
 
     @Override
-    public List<Categoria> readAll(){
+    public List<Categoria> readAll() {
         List<Categoria> categorias = new ArrayList<>();
         for (Categoria c : nombreBaseDB) {
             if (!c.isEliminado()) {
@@ -27,7 +29,7 @@ public class CategoriaDAO implements BaseDAO<Categoria>{
     }
 
     @Override
-    public Categoria readByID(Long id){
+    public Categoria readByID(Long id) {
         for (Categoria c : nombreBaseDB) {
             if (c.getId().equals(id) && !c.isEliminado()) {
                 return c;
@@ -37,7 +39,7 @@ public class CategoriaDAO implements BaseDAO<Categoria>{
     }
 
     @Override
-    public void update(Categoria entity){
+    public void update(Categoria entity) {
         Categoria existente = readByID(entity.getId());
         if (existente != null) {
             existente.setNombre(entity.getNombre());
@@ -47,7 +49,7 @@ public class CategoriaDAO implements BaseDAO<Categoria>{
     }
 
     @Override
-    public void delete(Long id){
+    public void delete(Long id) {
         Categoria existetnte = readByID(id);
         if (existetnte != null) {
             existetnte.setEliminado(true);

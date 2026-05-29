@@ -6,10 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import enums.Estado;
-
 import enums.FormaPago;
 
-public class Pedido extends Base{
+public class Pedido extends Base implements Calculable {
 
     private LocalDate fecha;
     private Estado estado;
@@ -30,24 +29,68 @@ public class Pedido extends Base{
         this.detalles = new ArrayList<>();
     }
 
-    public LocalDate getFecha() {return fecha;}
+    public void addDetallePedido(DetallePedido detalle) {
 
-    public void setFecha(LocalDate fecha) {this.fecha = fecha;}
+        double subtotalCalculado = detalle.getCantidad() * detalle.getProducto().getPrecio();
 
-    public Estado getEstado() {return estado;}
+        detalle.setSubtotal(subtotalCalculado);
 
-    public void setEstado(Estado estado) {this.estado = estado;}
+        this.detalles.add(detalle);
 
-    public double getTotal() {return total;}
+        this.total = calcularTotal();
+    }
 
-    public void setTotal(double total) {this.total = total;}
+    @Override
+    public double calcularTotal() {
 
-    public FormaPago getPago() {return pago;}
+        double suma = 0;
 
-    public void setPago(FormaPago pago) {this.pago = pago;}
+        for (DetallePedido dp : detalles) {
 
-    public List<DetallePedido> getDetalles() {return detalles;}
+            suma += dp.getSubtotal();
+        }
 
-    public void setDetalles(List<DetallePedido> detalles) {this.detalles = detalles;}
-    
+        return suma;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
+
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public void setEstado(Estado estado) {
+        this.estado = estado;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public FormaPago getPago() {
+        return pago;
+    }
+
+    public void setPago(FormaPago pago) {
+        this.pago = pago;
+    }
+
+    public List<DetallePedido> getDetalles() {
+        return detalles;
+    }
+
+    public void setDetalles(List<DetallePedido> detalles) {
+        this.detalles = detalles;
+    }
+
 }

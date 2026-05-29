@@ -1,8 +1,9 @@
+
 package entities;
 
 import java.time.LocalDateTime;
 
-public class Producto extends Base{
+public class Producto extends Base {
 
     private String nombre;
     private double precio;
@@ -11,7 +12,7 @@ public class Producto extends Base{
     private String imagen;
     private boolean disponible;
 
-    public Producto(){
+    public Producto() {
 
     }
 
@@ -26,30 +27,57 @@ public class Producto extends Base{
         this.disponible = disponible;
     }
 
-    public String getNombre() {return nombre;}
+    public String getNombre() {
+        return nombre;
+    }
 
-    public void setNombre(String nombre) {this.nombre = nombre;}
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 
-    public double getPrecio() {return precio;}
+    public double getPrecio() {
+        return precio;
+    }
 
-    public void setPrecio(double precio) {this.precio = precio;}
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
 
-    public String getDescripcion() {return descripcion;}
+    public String getDescripcion() {
+        return descripcion;
+    }
 
-    public void setDescripcion(String descripcion) {this.descripcion = descripcion;}
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
-    public int getStock() {return stock;}
+    public int getStock() {
+        return stock;
+    }
 
-    public void setStock(int stock) {this.stock = stock;}
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
 
-    public String getImagen() {return imagen;}
+    public String getImagen() {
+        return imagen;
+    }
 
-    public void setImagen(String imagen) {this.imagen = imagen;}
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
+    }
 
-    public boolean isDisponible() {return disponible;}
+    public boolean isDisponible() {
+        return disponible;
+    }
 
-    public void setDisponible(boolean disponible) {this.disponible = disponible;}
+    public void setDisponible(boolean disponible) {
+        this.disponible = disponible;
+    }
 
-    
-    
+    public static void create(Producto nuevoProducto) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'create'");
+    }
+
 }
