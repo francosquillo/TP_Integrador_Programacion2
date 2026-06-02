@@ -1,5 +1,5 @@
 # TP_Integrador_Programacion2
-##Creacion y configuracion de base de datos
+## Creacion y configuracion de base de datos
 Para la conexion a la base de datos hay que tener instalado el xampp, la extension de visual studio code "Database client JDBC" y el archivo de la carpeta "db" llamado "pedidos:db.sql".
 Si tenemos una base de datos local en la computadora hay que meterse a los servicios de la computadora para desactivarla y luego reiniciar la computadora para que no se genere un problema con el xampp.
 Si ya se detuvo el servicio de la computador o no fue necesario tenermos que activar los servidores de apache y mysql en el xampp si no ocurre ningun error le damos a la opcion de "admin", eso va a abrir una pagina en "phpMyadmin" donde tenemos que irnos a la parte de "importar" y ahi cargamos el archivo "pedidos_db.sql".
