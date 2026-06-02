@@ -2,97 +2,117 @@ package dao;
 
 import config.ConexionDB;
 import entities.Categoria;
+
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategoriaDAO implements BaseDAO<Categoria> {
 
     @Override
-    @SuppressWarnings("CallToPrintStackTrace")
-    public void create(Categoria entity) {
-        String sql = "INSERT INTO categorias (nombre, descripcion) VALUES (?, ?)";
+    public void create(Categoria entity){
+        String sql = "INSERT INTO categoria (eliminado, createdAt, nombre, descripcion) VALUES (?, ?, ?, ?)";
+
         try (Connection conn = ConexionDB.getConexion();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, entity.getNombre());
-            ps.setString(2, entity.getDescripcion());
-            ps.executeUpdate();
-            conn.commit(); 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                
+                pstmt.setBoolean(1, false);
+                LocalDateTime fechaCreacion = entity.getCreatedAt() != null ? entity.getCreatedAt() : LocalDateTime.now();
+                pstmt.setTimestamp(2, Timestamp.valueOf(fechaCreacion));
+                pstmt.setString(3, entity.getNombre());
+                pstmt.setString(4, entity.getDescripcion());
+
+                pstmt.executeUpdate();
+                System.out.println("La categoria se guardo correctamente");
+            } catch (SQLException e){
+                System.out.println("Error al crear el producto");
+                e.printStackTrace();
+            }
     }
 
     @Override
-    @SuppressWarnings("CallToPrintStackTrace")
-    public List<Categoria> readAll() {
+    public List<Categoria> readAll(){
         List<Categoria> lista = new ArrayList<>();
-        String sql = "SELECT * FROM categorias WHERE eliminado = FALSE";
+        String sql = "SELECT * FROM categoria WHERE eliminado = false";
+
         try (Connection conn = ConexionDB.getConexion();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Categoria c = new Categoria();
-                c.setId(rs.getLong("id"));
-                c.setNombre(rs.getString("nombre"));
-                c.setDescripcion(rs.getString("descripcion"));
-                lista.add(c);
-            }
-        } catch (SQLException e) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery()) {
+
+                while (rs.next()) {
+                    Categoria c = new Categoria();
+                    c.setId(rs.getLong("id_categoria"));
+                    c.setNombre(rs.getString("nombre"));
+                    c.setDescripcion(rs.getString("descripcion"));
+                    c.setEliminado(rs.getBoolean("eliminado"));
+                    Timestamp ts = rs.getTimestamp("createdAt");
+                    if (ts != null) c.setCreatedAt(ts.toLocalDateTime());
+
+                    lista.add(c);
+                }
+        } catch (SQLException e){
             e.printStackTrace();
         }
         return lista;
     }
 
     @Override
-    @SuppressWarnings("CallToPrintStackTrace")
-    public Categoria readByID(Long id) {
-        String sql = "SELECT * FROM categorias WHERE id = ? AND eliminado = FALSE";
+    public Categoria readByID(Long id){
+        Categoria c = null;
+        String sql = "SELECT * FROM categoria WHERE id = ? AND eliminado = false";
+
         try (Connection conn = ConexionDB.getConexion();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                Categoria c = new Categoria();
-                c.setId(rs.getLong("id"));
-                c.setNombre(rs.getString("nombre"));
-                c.setDescripcion(rs.getString("descripcion"));
-                return c;
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                
+                pstmt.setLong(1, id);
+                try (ResultSet rs = pstmt.executeQuery()){
+                    if (rs.next()) {
+                        c = new Categoria();
+                        c.setId(rs.getLong("id_categoria"));
+                        c.setNombre(rs.getString("nombre"));
+                        c.setDescripcion(rs.getString("descripcion"));
+                        c.setEliminado(rs.getBoolean("eliminado"));
+                        Timestamp ts = rs.getTimestamp("createdAt");
+                        if (ts != null) c.setCreatedAt(ts.toLocalDateTime());
+                    }
+                }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return c;
+    }
+
+    @Override
+    public void update(Categoria entity){
+        String sql = "UPDATE categoria SET nombre = ?, descripcion = ? WHERE id = ? AND eliminado = false";
+
+        try (Connection conn = ConexionDB.getConexion();
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+
+                pstmt.setString(1, entity.getNombre());
+                pstmt.setString(2, entity.getDescripcion());
+                pstmt.setLong(3, entity.getId());
+
+                int filas = pstmt.executeUpdate();
+                if(filas > 0) System.out.println("Categoria Actualizada");
+            }catch (SQLException e){
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     @Override
-    @SuppressWarnings("CallToPrintStackTrace")
-    public void update(Categoria entity) {
-        String sql = "UPDATE categorias SET nombre = ?, descripcion = ? WHERE id = ?";
-        try (Connection conn = ConexionDB.getConexion();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, entity.getNombre());
-            ps.setString(2, entity.getDescripcion());
-            ps.setLong(3, entity.getId());
-            ps.executeUpdate();
-            conn.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+    public void delete(Long id){
+        String sql = "UPDATE categoria SET eliminado = true WHERE id = ?";
 
-    @Override
-    @SuppressWarnings("CallToPrintStackTrace")
-    public void delete(Long id) {
-        // En lugar de borrar, hacemos un borrado lógico (setear eliminado = true)
-        String sql = "UPDATE categorias SET eliminado = TRUE WHERE id = ?";
         try (Connection conn = ConexionDB.getConexion();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, id);
-            ps.executeUpdate();
-            conn.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            PreparedStatement pstmt = conn.prepareStatement(sql)){
+
+                pstmt.setLong(1, id);
+                int filas = pstmt.executeUpdate();
+                if(filas > 0) System.out.println("Categoria eliminada");
+            }catch(SQLException e){
+                e.printStackTrace();
+            }
     }
 }

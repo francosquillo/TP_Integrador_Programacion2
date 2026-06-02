@@ -7,9 +7,9 @@ import java.sql.SQLException;
 public class ConexionDB {
     
     // Configuración de acceso: ajustá usuario y pass según tu instalación de MySQL
-    private static final String URL = "jdbc:mysql://localhost:3306/food_store";
+    private static final String URL = "jdbc:mysql://localhost:3306/pedidos_db";
     private static final String USER = "root"; 
-    private static final String PASS = "matheo46450405"; 
+    private static final String PASS = ""; 
     
     private static Connection conexion = null;
 
@@ -20,7 +20,6 @@ public static Connection getConexion() {
 
         if (conexion == null || conexion.isClosed()) {
             conexion = DriverManager.getConnection(URL, USER, PASS);
-            conexion.setAutoCommit(false); 
             System.out.println("Conexión exitosa a la base de datos.");
         }
     } catch (ClassNotFoundException e) {

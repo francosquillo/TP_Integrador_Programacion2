@@ -15,18 +15,20 @@ public class Pedido extends Base implements Calculable {
     private double total;
     private FormaPago pago;
     private List<DetallePedido> detalles;
+    private Usuario usuario;
 
     public Pedido() {
     }
 
     public Pedido(Long id, boolean eliminado, LocalDateTime createdAt, LocalDate fecha, Estado estado, double total,
-            FormaPago pago) {
+            FormaPago pago, Usuario usuario) {
         super(id, eliminado, createdAt);
         this.fecha = fecha;
         this.estado = estado;
         this.total = total;
         this.pago = pago;
         this.detalles = new ArrayList<>();
+        this.usuario = usuario;
     }
 
     public void addDetallePedido(DetallePedido detalle) {
@@ -92,5 +94,9 @@ public class Pedido extends Base implements Calculable {
     public void setDetalles(List<DetallePedido> detalles) {
         this.detalles = detalles;
     }
+
+    public Usuario getUsuario() {return usuario;}
+
+    public void setUsuario(Usuario usuario) {this.usuario = usuario;}
 
 }
