@@ -22,7 +22,7 @@ public class PedidoDAO implements BaseDAO<Pedido> {
 
     @Override
     public void create(Pedido entity){
-        String sqlPedido = "INSERT INTO pedido (eliminado, createdAt, fecha, estado, total, formaPago, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sqlPedido = "INSERT INTO pedido (eliminado, createdAt, fecha, estado, total, forma_Pago, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?)";
         String sqlDetalle = "INSERT INTO detalle_pedido (eliminado, createdAt, cantidad, subtotal, id_pedido, id_producto) VALUES (?, ?, ?, ?, ?, ?)";
 
         Connection conn = null;

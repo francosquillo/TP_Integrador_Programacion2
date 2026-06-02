@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import config.ConexionDB;
+import entities.Categoria;
 import entities.Producto;
 
 public class ProductoDAO implements BaseDAO<Producto> {
 
     @Override
     public void create(Producto entity){
-        String sql = "INSERT INTO producto (eliminado, createdAt, nombre, precio, descripcion, stock, imagen, disponible) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO producto (eliminado, createdAt, nombre, precio, descripcion, stock, imagen, disponible, id_categoria) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = ConexionDB.getConexion();
             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -26,6 +27,7 @@ public class ProductoDAO implements BaseDAO<Producto> {
                 pstmt.setInt(6, entity.getStock());
                 pstmt.setString(7, entity.getImagen());
                 pstmt.setBoolean(8, false);
+                pstmt.setLong(9, entity.getCategoria().getId());
 
                 pstmt.executeUpdate();
                 System.out.println("El producto se guardo correctamente");
@@ -56,6 +58,10 @@ public class ProductoDAO implements BaseDAO<Producto> {
                     p.setEliminado(rs.getBoolean("eliminado"));
                     Timestamp ts = rs.getTimestamp("createdAt");
                     if (ts != null) p.setCreatedAt(ts.toLocalDateTime());
+                    long idCat = rs.getLong("id_categoria");
+                    Categoria categoriaProducto = new Categoria();
+                    categoriaProducto.setId(idCat);
+                    p.setCategoria(categoriaProducto);
 
                     lista.add(p);
                 }
@@ -87,6 +93,10 @@ public class ProductoDAO implements BaseDAO<Producto> {
                         p.setEliminado(rs.getBoolean("eliminado"));
                         Timestamp ts = rs.getTimestamp("createdAt");
                         if (ts != null) p.setCreatedAt(ts.toLocalDateTime());
+                        long idCat = rs.getLong("id_categoria");
+                        Categoria categoriaProducto = new Categoria();
+                        categoriaProducto.setId(idCat);
+                        p.setCategoria(categoriaProducto);
                     }
                 }
         } catch (SQLException e){
@@ -97,16 +107,19 @@ public class ProductoDAO implements BaseDAO<Producto> {
 
     @Override
     public void update(Producto entity){
-        String sql = "UPDATE producto SET nombre = ?, precio = ?, stock = ? WHERE id = ? AND eliminado = false";
+        String sql = "UPDATE producto SET nombre = ?, precio = ?, descripcion = ?, stock = ?, imagen = ?, disponible = ?, id_categoria = ? WHERE id = ? AND eliminado = false";
 
         try (Connection conn = ConexionDB.getConexion();
             PreparedStatement pstmt = conn.prepareStatement(sql)){
 
                 pstmt.setString(1, entity.getNombre());
                 pstmt.setDouble(2, entity.getPrecio());
-                pstmt.setInt(3, entity.getStock());
-                pstmt.setLong(4, entity.getId());
-
+                pstmt.setString(3, entity.getDescripcion());
+                pstmt.setInt(4, entity.getStock());
+                pstmt.setLong(8, entity.getId());
+                pstmt.setString(5, entity.getImagen());
+                pstmt.setBoolean(6, entity.isDisponible());
+                pstmt.setLong(7, entity.getCategoria().getId());
                 int filas = pstmt.executeUpdate();
                 if(filas > 0) System.out.println("Producto Actualizado");
             }catch (SQLException e){
