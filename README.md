@@ -1,7 +1,7 @@
 # TP_Integrador_Programacion2
-Creacion y configuracion de base de datos
+## -Creacion y configuracion de base de datos
 
-Para la conexion a la base de datos hay que tener instalado el xampp, la extension de visual studio code "Database client JDBC" y el archivo de la carpeta "db" llamado "pedidos:db.sql".
+Para la conexion a la base de datos y el correcto funcionamiento del codigo hay que tener instalado el xampp, las extensiones de visual studio code "Database client JDBC" y "extension pack for java" y el archivo de la carpeta "db" llamado "pedidos_db.sql".
 
 Si tenemos una base de datos local en la computadora hay que meterse a los servicios de la computadora para desactivarla y luego reiniciar la computadora para que no se genere un problema con el xampp.
 
@@ -19,8 +19,8 @@ port=3306
 
 Luego si todo salio bien el codigo ya deberia poder andar perfectamente
 
--Guia de ejecucion
+## -Guia de ejecucion
 
--Datos de prueba
+## -Datos de prueba
 
 -Link video
