@@ -1,178 +1,368 @@
-import config.ConexionDB;
-import dao.CategoriaDAO;
-import dao.PedidoDAO;
-import dao.ProductoDAO;
-import dao.UsuarioDAO;
-import entities.Categoria;
-import entities.DetallePedido;
-import entities.Pedido;
-import entities.Producto;
-import entities.Usuario;
-import enums.Estado;
-import enums.FormaPago;
-import enums.Rol;
-
-import java.sql.Connection;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
+import entities.Categoria;
+import service.CategoriaService;
 
 public class Main {
+    
+// # Instanciamos el servicio de categorías
+    private static CategoriaService categoriaService = new CategoriaService();
+
     public static void main(String[] args) {
-        
-        System.out.println("Intentando conectar con la base de datos...");
-        
-        Connection miConexion = ConexionDB.getConexion();
-        
-        if(miConexion != null){
-            System.out.println("¡Listo! El puente está construido. Podemos empezar a mandar SQL.");
-        } else {
-            System.out.println("Algo falló. Revisá los errores de arriba.");
-        }
+// # Inicializamos el scanner
+        Scanner scanner = new Scanner(System.in);
+        int opcion = -1;
 
-        System.out.println("--- INICIANDO PRUEBA DE CONEXIÓN ---");
+// # BUCLE DEL MENÚ PRINCIPAL
+        do {
+            System.out.println("\n=== SISTEMA DE PEDIDOS (FOOD STORE) ===");
+            System.out.println("1. Gestión de Categorías");
+            System.out.println("2. Gestión de Productos");
+            System.out.println("3. Gestión de Usuarios");
+            System.out.println("4. Gestión de Pedidos");
+            System.out.println("0. Salir del Sistema");
+            System.out.print("Seleccione una opción: ");
+            
+// # Validación para evitar que el programa se rompa si ingresan letras
+            if (scanner.hasNextInt()) {
+                opcion = scanner.nextInt();
+                scanner.nextLine(); 
 
-        // 1. Instanciamos el DAO que vamos a probar
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
+                switch (opcion) {
+                    case 1:
+                        menuCategorias(scanner);
+                        break;
+                    case 2:
+                        menuProductos(scanner);
+                        break;
+                    case 3:
+                        menuUsuarios(scanner);
+                        break;
+                    case 4:
+                        menuPedidos(scanner);
+                        break;
+                    case 0:
+                        System.out.println("Saliendo del sistema... ¡Hasta luego!");
+                        break;
+                    default:
+                        System.out.println("Error: Opción incorrecta. Elija un número del 0 al 4.");
+                        presionarEnterParaContinuar(scanner);
+                }
+            } else {
+                System.out.println("Error: Por favor, ingrese un número válido.");
+                scanner.next(); 
+                presionarEnterParaContinuar(scanner);
+            }
+        } while (opcion != 0);
 
-        // 2. Creamos un nuevo objeto Usuario
-        Usuario nuevoUsuario = new Usuario();
-        nuevoUsuario.setNombre("Augusto");
-        nuevoUsuario.setApellido("Ingrassia");
-        nuevoUsuario.setMail("admin@aethergames.com");
-        nuevoUsuario.setCelular("2615555555");
-        nuevoUsuario.setContrasenia("123456");
-        nuevoUsuario.setRol(Rol.ADMIN); 
+// # Cerramos el scanner al salir del sistema
+        scanner.close();
+    }
 
-        // 3. Probamos el método CREATE
-        System.out.println("\nIntentando guardar usuario en MySQL...");
-        usuarioDAO.create(nuevoUsuario);
+    // ==========================================================
+    // # SUBMENÚ: CATEGORÍAS
+    // ==========================================================
+    public static void menuCategorias(Scanner scanner) {
+        int opcionCat = -1;
+        do {
+            System.out.println("\n--- MENÚ CATEGORÍAS ---");
+            System.out.println("1. Listar Categorías");
+            System.out.println("2. Crear Categoría");
+            System.out.println("3. Editar Categoría");
+            System.out.println("4. Eliminar Categoría");
+            System.out.println("0. Volver al Menú Principal");
+            System.out.print("Seleccione: ");
 
-        // 4. Probamos el método READ ALL
-        System.out.println("\nRecuperando lista de usuarios desde la base de datos:");
-        List<Usuario> usuariosGuardados = usuarioDAO.readAll();
+            if (scanner.hasNextInt()) {
+                opcionCat = scanner.nextInt();
+                scanner.nextLine(); 
 
-        for (Usuario u : usuariosGuardados) {
-            System.out.println("ID: " + u.getId() + 
-                               " | Nombre: " + u.getNombre() + " " + u.getApellido() + 
-                               " | Mail: " + u.getMail() + 
-                               " | Rol: " + u.getRol());
-        }
-        
-        System.out.println("\n--- PRUEBA FINALIZADA ---");
+                switch (opcionCat) {
+                    case 1:
+                        System.out.println("\n--- LISTA DE CATEGORÍAS ---");
+                        List<Categoria> lista = categoriaService.readAll();
+                        if (lista == null || lista.isEmpty()) {
+                            System.out.println("No hay categorías cargadas.");
+                        } else {
+                            for (Categoria cat : lista) {
+                                System.out.println("ID: " + cat.getId() + " | Nombre: " + cat.getNombre());
+                            }
+                        }
+                        break;
+                        
+                    case 2:
+                        System.out.println("\n--- CREAR NUEVA CATEGORÍA ---");
+                        String nombre = "";
+                        while (nombre.trim().isEmpty()) {
+                            System.out.print("Ingrese el nombre de la categoría: ");
+                            nombre = scanner.nextLine();
+                        }
+                        System.out.print("Ingrese la descripción de la categoría: ");
+                        String descripcion = scanner.nextLine();
 
-        System.out.println("--- INICIANDO PRUEBA DE CATEGORÍAS ---");
+                        Categoria nuevaCategoria = new Categoria();
+                        nuevaCategoria.setNombre(nombre);
+                        nuevaCategoria.setDescripcion(descripcion);
 
-        // 1. Instanciamos el DAO de categorías
-        CategoriaDAO categoriaDAO = new CategoriaDAO();
+                        categoriaService.create(nuevaCategoria);
+                        System.out.println("Categoría enviada para su creación.");
+                        break;
 
-        // 2. Creamos una nueva categoría
-        Categoria nuevaCategoria = new Categoria();
-        nuevaCategoria.setNombre("Juegos de Rol (RPG)");
-        nuevaCategoria.setDescripcion("Aventuras inmersivas con progresión de personajes");
+                    case 3:
+                        System.out.println("\n--- EDITAR CATEGORÍA ---");
+                        System.out.print("Ingrese el ID de la categoría a editar: ");
+                        
+                        // # Validamos que el ID ingresado sea un número (Long)
+                        if (scanner.hasNextLong()) {
+                            Long idEditar = scanner.nextLong();
+                            scanner.nextLine(); 
 
-        // 3. Probamos el método CREATE
-        System.out.println("\nIntentando guardar categoría en MySQL...");
-        categoriaDAO.create(nuevaCategoria);
+                            // # Buscamos la categoría usando tu método readByID
+                            Categoria catEditar = categoriaService.readByID(idEditar);
 
-        // 4. Probamos el método READ ALL
-        System.out.println("\nRecuperando lista de categorías desde la base de datos:");
-        List<Categoria> categoriasGuardadas = categoriaDAO.readAll();
+                            // # Si es null, significa que no existe o fue eliminada
+                            if (catEditar == null) {
+                                System.out.println("Error: No se encontró una categoría con el ID " + idEditar);
+                            } else {
+                                // # Mostramos el nombre actual para que el usuario sepa qué está editando
+                                System.out.println("Editando la categoría: " + catEditar.getNombre());
+                                
+                                // # Pedimos el nuevo nombre y evitamos que lo deje vacío
+                                String nuevoNombre = "";
+                                while (nuevoNombre.trim().isEmpty()) {
+                                    System.out.print("Ingrese el NUEVO nombre: ");
+                                    nuevoNombre = scanner.nextLine();
+                                }
+                                
+                                System.out.print("Ingrese la NUEVA descripción: ");
+                                String nuevaDesc = scanner.nextLine();
 
-        for (Categoria c : categoriasGuardadas) {
-            System.out.println("ID: " + c.getId() + 
-                               " | Nombre: " + c.getNombre() + 
-                               " | Descripción: " + c.getDescripcion());
-        }
-        
-        System.out.println("\n--- PRUEBA FINALIZADA ---");
+                                // # Actualizamos los datos del objeto que trajimos de la base
+                                catEditar.setNombre(nuevoNombre);
+                                catEditar.setDescripcion(nuevaDesc);
 
-        System.out.println("--- INICIANDO PRUEBA DE PRODUCTOS ---");
+                                // # Lo mandamos al service para que ejecute el update
+                                categoriaService.update(catEditar);
+                                System.out.println("Categoría editada exitosamente.");
+                            }
+                        } else {
+                            System.out.println("Error: Ingrese un ID numérico válido.");
+                            scanner.next(); // # Limpiamos la basura ingresada
+                        }
+                        break;
 
-        // 1. Instanciamos el DAO de productos
-        ProductoDAO productoDAO = new ProductoDAO();
+                    case 4:
+                        System.out.println("\n--- ELIMINAR CATEGORÍA ---");
+                        System.out.print("Ingrese el ID de la categoría a eliminar: ");
+                        
+                        // # Volvemos a validar que ingrese un número
+                        if (scanner.hasNextLong()) {
+                            Long idEliminar = scanner.nextLong();
+                            scanner.nextLine(); 
 
-        // 2. Preparamos la categoría a la que pertenece el juego
-        // Le ponemos ID 1 asumiendo que la categoría que creaste en la prueba anterior (RPG) tiene ese ID en MySQL.
-        Categoria categoriaJuego = new Categoria();
-        categoriaJuego.setId(1L);
+                            // # Buscamos la categoría primero para asegurarnos de que exista
+                            Categoria catEliminar = categoriaService.readByID(idEliminar);
 
-        // 3. Creamos un nuevo producto para el catálogo
-        Producto nuevoProducto = new Producto();
-        nuevoProducto.setNombre("Pokémon Legends: Arceus");
-        nuevoProducto.setPrecio(55000.00);
-        nuevoProducto.setDescripcion("Aventura RPG de acción en la antigua región de Hisui");
-        nuevoProducto.setStock(10);
-        nuevoProducto.setImagen("pokemon_arceus_portada.png");
-        nuevoProducto.setDisponible(true);
-        
-        // ¡El paso mágico! Conectamos el juego con su categoría
-        nuevoProducto.setCategoria(categoriaJuego); 
+                            if (catEliminar == null) {
+                                System.out.println("Error: No se encontró la categoría con el ID " + idEliminar);
+                            } else {
+                                // # Cumplimos con la consigna: Pedimos confirmación antes de borrar
+                                System.out.println("Atención: Está por eliminar la categoría '" + catEliminar.getNombre() + "'");
+                                System.out.print("¿Está seguro? (1 para SÍ, 0 para NO): ");
+                                
+                                if (scanner.hasNextInt()) {
+                                    int confirmacion = scanner.nextInt();
+                                    scanner.nextLine();
+                                    
+                                    if (confirmacion == 1) {
+                                        // # Si confirma, usamos tu método delete (acordate que la baja lógica la hace el DAO)
+                                        categoriaService.delete(idEliminar);
+                                        System.out.println("Categoría eliminada del sistema.");
+                                    } else {
+                                        System.out.println("Operación cancelada. No se borró nada.");
+                                    }
+                                } else {
+                                    System.out.println("Entrada no válida. Operación cancelada por seguridad.");
+                                    scanner.next();
+                                }
+                            }
+                        } else {
+                            System.out.println("Error: Ingrese un ID numérico válido.");
+                            scanner.next(); 
+                        }
+                        break;
 
-        // 4. Probamos el método CREATE
-        System.out.println("\nIntentando guardar producto en MySQL...");
-        productoDAO.create(nuevoProducto);
+                    case 0:
+                        System.out.println("Volviendo al menú principal...");
+                        break;
+                        
+                    default:
+                        System.out.println("Error: Opción incorrecta.");
+                }
 
-        // 5. Probamos el método READ ALL
-        System.out.println("\nRecuperando lista de productos desde la base de datos:");
-        List<Producto> productosGuardados = productoDAO.readAll();
+                if (opcionCat != 0) {
+                    presionarEnterParaContinuar(scanner);
+                }
+            } else {
+                System.out.println("Error: Ingrese un número.");
+                scanner.next();
+                presionarEnterParaContinuar(scanner);
+            }
+        } while (opcionCat != 0);
+    }
 
-        for (Producto p : productosGuardados) {
-            System.out.println("ID: " + p.getId() + 
-                               " | Nombre: " + p.getNombre() + 
-                               " | Precio: $" + p.getPrecio() + 
-                               " | Stock: " + p.getStock() +
-                               " | ID Categoría: " + p.getCategoria().getId());
-        }
-        
-        System.out.println("\n--- PRUEBA FINALIZADA ---");
+    // ==========================================================
+    // # SUBMENÚ: PRODUCTOS
+    // ==========================================================
+    public static void menuProductos(Scanner scanner) {
+        int opcionProd = -1;
+        do {
+            System.out.println("\n--- MENÚ PRODUCTOS ---");
+            System.out.println("1. Listar Productos");
+            System.out.println("2. Crear Producto");
+            System.out.println("3. Editar Producto");
+            System.out.println("4. Eliminar Producto");
+            System.out.println("0. Volver al Menú Principal");
+            System.out.print("Seleccione: ");
 
-        System.out.println("--- INICIANDO PRUEBA DE PEDIDOS ---");
+            if (scanner.hasNextInt()) {
+                opcionProd = scanner.nextInt();
+                scanner.nextLine(); 
 
-        PedidoDAO pedidoDAO = new PedidoDAO();
+                switch (opcionProd) {
+                    case 1:
+                        System.out.println("Listando productos... (Función en construcción)");
+                        break;
+                    case 2:
+                        System.out.println("Creando producto... (Función en construcción)");
+                        break;
+                    case 3:
+                        System.out.println("Editando producto... (Función en construcción)");
+                        break;
+                    case 4:
+                        System.out.println("Eliminando producto... (Función en construcción)");
+                        break;
+                    case 0:
+                        System.out.println("Volviendo...");
+                        break;
+                    default:
+                        System.out.println("Error: Opción incorrecta.");
+                }
 
-        // 1. Armamos el "cascarón" del comprador (Usamos el ID 1 que creamos ayer)
-        Usuario comprador = new Usuario();
-        comprador.setId(1L);
+                if (opcionProd != 0) {
+                    presionarEnterParaContinuar(scanner);
+                }
+            } else {
+                System.out.println("Error: Ingrese un número.");
+                scanner.next();
+                presionarEnterParaContinuar(scanner);
+            }
+        } while (opcionProd != 0);
+    }
 
-        // 2. Armamos el "cascarón" del juego que se va a llevar (El ID 1 que acabás de crear)
-        Producto juegoAComprar = new Producto();
-        juegoAComprar.setId(1L);
+    // ==========================================================
+    // # SUBMENÚ: USUARIOS
+    // ==========================================================
+    public static void menuUsuarios(Scanner scanner) {
+        int opcionUsu = -1;
+        do {
+            System.out.println("\n--- MENÚ USUARIOS ---");
+            System.out.println("1. Listar Usuarios");
+            System.out.println("2. Crear Usuario");
+            System.out.println("3. Editar Usuario");
+            System.out.println("4. Eliminar Usuario");
+            System.out.println("0. Volver al Menú Principal");
+            System.out.print("Seleccione: ");
 
-        // 3. Armamos el Detalle del Pedido (Es como la línea del carrito de compras)
-        DetallePedido detalle1 = new DetallePedido();
-        detalle1.setProducto(juegoAComprar);
-        detalle1.setCantidad(2); // Se lleva 2 copias
-        detalle1.setSubtotal(110000.00); // Suponiendo que el juego salía 55000
+            if (scanner.hasNextInt()) {
+                opcionUsu = scanner.nextInt();
+                scanner.nextLine(); 
 
-        // Metemos el detalle en una lista (porque un pedido puede tener muchos juegos distintos)
-        List<DetallePedido> carrito = new ArrayList<>();
-        carrito.add(detalle1);
+                switch (opcionUsu) {
+                    case 1:
+                        System.out.println("Listando usuarios... (Función en construcción)");
+                        break;
+                    case 2:
+                        System.out.println("Creando usuario... (Función en construcción)");
+                        break;
+                    case 3:
+                        System.out.println("Editando usuario... (Función en construcción)");
+                        break;
+                    case 4:
+                        System.out.println("Eliminando usuario... (Función en construcción)");
+                        break;
+                    case 0:
+                        System.out.println("Volviendo...");
+                        break;
+                    default:
+                        System.out.println("Error: Opción incorrecta.");
+                }
 
-        // 4. Armamos el Pedido Principal
-        Pedido nuevoPedido = new Pedido();
-        nuevoPedido.setUsuario(comprador);
-        nuevoPedido.setFecha(LocalDate.now());
-        nuevoPedido.setEstado(Estado.PENDIENTE); // Fijate que esta palabra exista en tu Enum
-        nuevoPedido.setPago(FormaPago.EFECTIVO); // Fijate que esta palabra exista en tu Enum
-        nuevoPedido.setTotal(110000.00);
-        nuevoPedido.setDetalles(carrito); // Le inyectamos la lista de detalles
+                if (opcionUsu != 0) {
+                    presionarEnterParaContinuar(scanner);
+                }
+            } else {
+                System.out.println("Error: Ingrese un número.");
+                scanner.next();
+                presionarEnterParaContinuar(scanner);
+            }
+        } while (opcionUsu != 0);
+    }
 
-        // 5. ¡A ejecutar la transacción!
-        System.out.println("\nIntentando guardar el pedido y sus detalles en MySQL...");
-        pedidoDAO.create(nuevoPedido);
+    // ==========================================================
+    // # SUBMENÚ: PEDIDOS
+    // ==========================================================
+    public static void menuPedidos(Scanner scanner) {
+        int opcionPed = -1;
+        do {
+            System.out.println("\n--- MENÚ PEDIDOS ---");
+            System.out.println("1. Listar Pedidos");
+            System.out.println("2. Crear Pedido");
+            System.out.println("3. Editar Pedido");
+            System.out.println("4. Eliminar Pedido");
+            System.out.println("0. Volver al Menú Principal");
+            System.out.print("Seleccione: ");
 
-        // 6. Recuperamos para ver si se guardó
-        System.out.println("\nRecuperando lista de pedidos:");
-        List<Pedido> pedidosGuardados = pedidoDAO.readAll();
+            if (scanner.hasNextInt()) {
+                opcionPed = scanner.nextInt();
+                scanner.nextLine(); 
 
-        for (Pedido p : pedidosGuardados) {
-            System.out.println("Pedido N°: " + p.getId() + 
-                               " | ID Comprador: " + p.getUsuario().getId() + 
-                               " | Estado: " + p.getEstado() +
-                               " | Total: $" + p.getTotal());
-        }
-        
-        System.out.println("\n--- PRUEBA FINALIZADA ---");
+                switch (opcionPed) {
+                    case 1:
+                        System.out.println("Listando pedidos... (Función en construcción)");
+                        break;
+                    case 2:
+                        System.out.println("Creando pedido... (Función en construcción)");
+                        break;
+                    case 3:
+                        System.out.println("Editando pedido... (Función en construcción)");
+                        break;
+                    case 4:
+                        System.out.println("Eliminando pedido... (Función en construcción)");
+                        break;
+                    case 0:
+                        System.out.println("Volviendo...");
+                        break;
+                    default:
+                        System.out.println("Error: Opción incorrecta.");
+                }
+
+                if (opcionPed != 0) {
+                    presionarEnterParaContinuar(scanner);
+                }
+            } else {
+                System.out.println("Error: Ingrese un número.");
+                scanner.next();
+                presionarEnterParaContinuar(scanner);
+            }
+        } while (opcionPed != 0);
+    }
+
+    // ==========================================================
+    // # MÉTODO AUXILIAR PARA PAUSAS
+    // ==========================================================
+    public static void presionarEnterParaContinuar(Scanner scanner) {
+        System.out.println("\nPresione ENTER para continuar...");
+        scanner.nextLine();
     }
 }
