@@ -1,13 +1,15 @@
 import java.util.List;
 import java.util.Scanner;
 import entities.Categoria;
+import entities.Usuario;
 import service.CategoriaService;
+import service.UsuarioService;
 
 public class Main {
     
 // # Instanciamos el servicio de categorías
     private static CategoriaService categoriaService = new CategoriaService();
-
+    private static UsuarioService usuarioService = new UsuarioService();
     public static void main(String[] args) {
 // # Inicializamos el scanner
         Scanner scanner = new Scanner(System.in);
@@ -280,22 +282,111 @@ public class Main {
 
                 switch (opcionUsu) {
                     case 1:
-                        System.out.println("Listando usuarios... (Función en construcción)");
+                        System.out.println("\n--- LISTA DE USUARIOS ---");
+                        
+                        List<Usuario> listaUsuarios = usuarioService.readAll();
+                        if (listaUsuarios == null || listaUsuarios.isEmpty()) {
+                            System.out.println("No hay usuarios cargados en el sistema.");
+                        } else {
+                            for (Usuario u : listaUsuarios) {
+                              
+                                System.out.println("ID: " + u.getId() + " | Nombre: " + u.getNombre() + " | Mail: " + u.getMail());
+                            }
+                        }
                         break;
                     case 2:
-                        System.out.println("Creando usuario... (Función en construcción)");
-                        break;
+                       System.out.println("\n--- REGISTRAR NUEVO USUARIO ---");
+                       scanner.nextLine(); 
+
+                       System.out.print("Nombre: ");
+                       String nom = scanner.nextLine();
+
+                       System.out.print("Apellido: ");
+                       String ape = scanner.nextLine();
+
+                       System.out.print("Mail: ");
+                       String correo = scanner.nextLine();
+
+                       System.out.print("Celular: ");
+                       String cel = scanner.nextLine();
+
+                       System.out.print("Contraseña: ");
+                       String contra = scanner.nextLine();
+
+                        // Creamos el objeto y le pasamos todas las variables
+                     Usuario nuevoUsuario = new Usuario();
+                     nuevoUsuario.setNombre(nom);
+                     nuevoUsuario.setApellido(ape);
+                     nuevoUsuario.setMail(correo);
+                     nuevoUsuario.setCelular(cel);
+                     nuevoUsuario.setContrasenia(contra);
+     
+                     usuarioService.create(nuevoUsuario);
+                     break;
                     case 3:
-                        System.out.println("Editando usuario... (Función en construcción)");
+                        System.out.println("\n--- MODIFICAR USUARIO ---");
+                        System.out.print("Ingrese el ID del usuario a modificar: ");
+                        long idModificar = scanner.nextLong();
+                        scanner.nextLine(); // Limpia el buffer
+
+        
+                        Usuario usuarioEditar = usuarioService.readByID(idModificar);
+
+                        if (usuarioEditar != null) {
+                         System.out.println("Usuario encontrado: " + usuarioEditar.getNombre() + " " + usuarioEditar.getApellido());
+                         System.out.println("(Deje en blanco y presione Enter para mantener el dato actual)");
+
+                         System.out.print("Nuevo Nombre [" + usuarioEditar.getNombre() + "]: ");
+                         String nuevoNom = scanner.nextLine();
+                        if (!nuevoNom.trim().isEmpty()) usuarioEditar.setNombre(nuevoNom);
+
+                         System.out.print("Nuevo Apellido [" + usuarioEditar.getApellido() + "]: ");
+                         String nuevoApe = scanner.nextLine();
+                        if (!nuevoApe.trim().isEmpty()) usuarioEditar.setApellido(nuevoApe);
+
+                         System.out.print("Nuevo Celular [" + usuarioEditar.getCelular() + "]: ");
+                         String nuevoCel = scanner.nextLine();
+                        if (!nuevoCel.trim().isEmpty()) usuarioEditar.setCelular(nuevoCel);
+
+                         System.out.print("Nueva Contraseña: ");
+                         String nuevaContra = scanner.nextLine();
+                        if (!nuevaContra.trim().isEmpty()) usuarioEditar.setContrasenia(nuevaContra);
+
+            
+                        usuarioService.update(usuarioEditar);
+                         } else {
+                         System.out.println("No se encontró ningún usuario activo con el ID: " + idModificar);
+                         }
                         break;
+        
                     case 4:
-                        System.out.println("Eliminando usuario... (Función en construcción)");
-                        break;
+                      System.out.println("\n--- ELIMINAR USUARIO ---");
+                      System.out.print("Ingrese el ID del usuario a eliminar: ");
+                      long idEliminar = scanner.nextLong();
+                      scanner.nextLine(); // Limpia el buffer
+
+                    // Verificamos si existe antes de borrar
+                      Usuario usuarioEliminar = usuarioService.readByID(idEliminar);
+
+                      if (usuarioEliminar != null) {
+                       System.out.print("¿Seguro que desea eliminar a " + usuarioEliminar.getNombre() + " " + usuarioEliminar.getApellido() + "? (S/N): ");
+                       String confirma = scanner.nextLine();
+
+                      if (confirma.equalsIgnoreCase("S")) {
+                       usuarioService.delete(idEliminar);
+                
+                      } else {
+                       System.out.println("Eliminación cancelada.");
+                      }
+                      } else {
+                       System.out.println("No se encontró ningún usuario activo con el ID: " + idEliminar);
+                      }
+                      break;
                     case 0:
-                        System.out.println("Volviendo...");
+                        System.out.println("Saliendo del menu Usuarios...");
                         break;
                     default:
-                        System.out.println("Error: Opción incorrecta.");
+                        System.out.println("Error: Opcion no valida, Intente de nuevo");
                 }
 
                 if (opcionUsu != 0) {
