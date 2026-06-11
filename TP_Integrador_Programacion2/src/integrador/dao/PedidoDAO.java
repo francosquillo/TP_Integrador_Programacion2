@@ -132,7 +132,7 @@ public class PedidoDAO implements BaseDAO<Pedido> {
     @Override
     public Pedido readByID(Long id){
         Pedido p = null;
-        String sql = "SELECT * FROM pedido WHERE id = ? AND eliminado = false";
+        String sql = "SELECT * FROM Pedido WHERE id_pedido = ? AND eliminado = false";
 
         try (Connection conn = ConexionDB.getConexion();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -172,7 +172,7 @@ public class PedidoDAO implements BaseDAO<Pedido> {
 
     @Override
     public void update(Pedido entity){
-        String sql = "UPDATE pedido SET estado = ?, forma_Pago = ? WHERE id = ? AND eliminado = false";
+        String sql = "UPDATE pedido SET estado = ?, forma_Pago = ? WHERE id_pedido = ? AND eliminado = false";
 
         try (Connection conn = ConexionDB.getConexion();
             PreparedStatement pstmt = conn.prepareStatement(sql)){
@@ -190,7 +190,7 @@ public class PedidoDAO implements BaseDAO<Pedido> {
 
     @Override
     public void delete(Long id){
-        String sql = "UPDATE pedido SET eliminado = true WHERE id = ?";
+        String sql = "UPDATE pedido SET eliminado = true WHERE id_pedido = ?";
 
         try (Connection conn = ConexionDB.getConexion();
             PreparedStatement pstmt = conn.prepareStatement(sql)){

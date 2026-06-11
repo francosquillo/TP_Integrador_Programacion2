@@ -1,8 +1,16 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import entities.Categoria;
+import entities.DetallePedido;
+import entities.Pedido;
+import entities.Producto;
 import entities.Usuario;
+import enums.Estado;
+import enums.FormaPago;
 import service.CategoriaService;
+import service.PedidoService;
+import service.ProductoService;
 import service.UsuarioService;
 
 public class Main {
@@ -10,6 +18,8 @@ public class Main {
 // # Instanciamos el servicio de categorías
     private static CategoriaService categoriaService = new CategoriaService();
     private static UsuarioService usuarioService = new UsuarioService();
+    private static PedidoService pedidoService = new PedidoService();
+    private static ProductoService productoService = new ProductoService();
     public static void main(String[] args) {
 // # Inicializamos el scanner
         Scanner scanner = new Scanner(System.in);
@@ -419,24 +429,159 @@ public class Main {
                 scanner.nextLine(); 
 
                 switch (opcionPed) {
-                    case 1:
-                        System.out.println("Listando pedidos... (Función en construcción)");
-                        break;
+                    case 1: // LISTAR PEDIDOS
+                       System.out.println("\n--- LISTA DE PEDIDOS ---");
+                        List<Pedido> listaPedidos = pedidoService.readAll();
+                       if (listaPedidos.isEmpty()) {
+                        System.out.println("No hay pedidos registrados en el sistema.");
+                        } else {
+                       for (Pedido p : listaPedidos) {
+                        System.out.println("ID Pedido: " + p.getId() + 
+                         " | Fecha: " + p.getFecha() + 
+                         " | Estado: " + p.getEstado() + 
+                         " | Total: $" + p.getTotal() + 
+                         " | Pago: " + p.getPago() + 
+                         " | ID Usuario: " + p.getUsuario().getId());
+                            }
+                        }
+                     break;
                     case 2:
-                        System.out.println("Creando pedido... (Función en construcción)");
-                        break;
+                        System.out.println("\n--- CREAR NUEVO PEDIDO ---");
+        
+                     // 1. Datos básicos
+                       System.out.print("Ingrese el ID del Usuario: ");
+                       long idUsu = scanner.nextLong();
+                       scanner.nextLine();
+        
+                      Usuario usu = new Usuario();
+                      usu.setId(idUsu);
+
+                      Pedido nuevoPedido = new Pedido();
+                      nuevoPedido.setUsuario(usu);
+                      nuevoPedido.setFecha(java.time.LocalDate.now());
+                      nuevoPedido.setEstado(Estado.PENDIENTE); // O el estado inicial que usen
+        
+                     // 2. Selección de Forma de Pago
+                      System.out.println("Forma de pago: 1. EFECTIVO, 2. TARJETA, 3. TRANSFERENCIA");
+                      int opcPago = scanner.nextInt();
+                      scanner.nextLine();
+                      nuevoPedido.setPago(opcPago == 1 ? FormaPago.EFECTIVO : (opcPago == 2 ? FormaPago.TARJETA : FormaPago.TRANSFERENCIA));
+
+                     // 3. Carga de productos 
+                      List<DetallePedido> detalles = new ArrayList<>();
+                      double totalPedido = 0;
+                      boolean agregar = true;
+
+                      while (agregar) {
+                       System.out.print("Ingrese ID del producto: ");
+                       long idProd = scanner.nextLong();
+                       System.out.print("Cantidad: ");
+                       int cant = scanner.nextInt();
+                       scanner.nextLine();
+
+                      Producto prod = productoService.readByID(idProd);
+                     
+                     if (prod != null) {
+                      // CALCULAMOS EL SUBTOTAL USANDO EL PRECIO DEL PRODUCTO
+                      double subtotal = prod.getPrecio() * cant;
+            
+                      DetallePedido det = new DetallePedido();
+                      det.setProducto(prod);
+                      det.setCantidad(cant);
+                      det.setSubtotal(subtotal);
+            
+                      detalles.add(det);
+                      totalPedido += subtotal;
+
+                      System.out.println("Producto agregado: " + prod.getNombre() + " | Subtotal: $" + subtotal);
+                     } else {
+                       System.out.println("Error: Producto no encontrado. No se agregó al pedido.");
+                     }
+
+                     System.out.print("¿Agregar otro producto? (S/N): ");
+                     agregar = scanner.nextLine().equalsIgnoreCase("S");
+                     }
+
+                     nuevoPedido.setDetalles(detalles);
+                     nuevoPedido.setTotal(totalPedido);
+
+                     // 4. Guardar
+                     pedidoService.create(nuevoPedido);
+                     System.out.println("Pedido guardado con éxito por un total de: $" + totalPedido);
+                     break;
+
                     case 3:
-                        System.out.println("Editando pedido... (Función en construcción)");
-                        break;
+                        System.out.println("\n--- MODIFICAR ESTADO/PAGO DE PEDIDO ---");
+                      System.out.print("Ingrese el ID del pedido a modificar: ");
+                      long idModificar = scanner.nextLong();
+                      scanner.nextLine();
+
+                     // 1. Buscamos el pedido en la BD
+                      Pedido pedidoEditar = pedidoService.readByID(idModificar);
+
+                      if (pedidoEditar != null) {
+                         System.out.println("Pedido encontrado. Estado actual: " + pedidoEditar.getEstado() + 
+                           " | Pago actual: " + pedidoEditar.getPago());
+
+                     // 2. Modificar Estado
+                      System.out.println("Seleccione nuevo Estado: 1. PENDIENTE, 2. CONFIRMADO, 3. TERMINADO, 4. CANCELADO");
+                      System.out.print("Opción (0 para mantener actual): ");
+                      int opcEstado = scanner.nextInt();
+                      scanner.nextLine();
+
+                      if (opcEstado >= 1 && opcEstado <= 4) {
+                         Estado[] estados = Estado.values();
+                          pedidoEditar.setEstado(estados[opcEstado - 1]);
+                     } 
+
+                     // 3. Modificar Forma de Pago
+                      System.out.println("Seleccione nueva Forma de Pago: 1. EFECTIVO, 2. TARJETA, 3. TRANSFERENCIA");
+                      System.out.print("Opción (0 para mantener actual): ");
+                      opcPago = scanner.nextInt();
+                      scanner.nextLine();
+
+                     if (opcPago >= 1 && opcPago <= 3) {
+                         FormaPago[] pagos = FormaPago.values();
+                         pedidoEditar.setPago(pagos[opcPago - 1]);
+                       } 
+
+                     // 4. Guardamos los cambios
+                      pedidoService.update(pedidoEditar);
+                      System.out.println("¡Pedido actualizado correctamente!");
+                     } else {
+                         System.out.println("Error: No se encontró un pedido activo con el ID: " + idModificar);
+                        } 
+    
+                      break; 
+
                     case 4:
-                        System.out.println("Eliminando pedido... (Función en construcción)");
-                        break;
+                        System.out.println("\n--- CANCELAR/ELIMINAR PEDIDO ---");
+                        System.out.print("Ingrese el ID del pedido a eliminar: ");
+                        long idEliminar = scanner.nextLong();
+                        scanner.nextLine();
+
+                        Pedido pedidoEliminar = pedidoService.readByID(idEliminar);
+
+                        if (pedidoEliminar != null) {
+                           System.out.print("¿Seguro que desea eliminar el pedido #" + pedidoEliminar.getId() + " del usuario " + pedidoEliminar.getUsuario().getId() + "? (S/N): ");
+                           String confirma = scanner.nextLine();
+
+                        if (confirma.equalsIgnoreCase("S")) {
+                           pedidoService.delete(idEliminar);
+                        } else {
+                          System.out.println("Operación cancelada.");
+                         }
+                        } else {
+                          System.out.println("No se encontró un pedido activo con el ID: " + idEliminar);
+                         }
+                         break;
+                        
                     case 0:
-                        System.out.println("Volviendo...");
+                        System.out.println("Volviendo al menú principal...");
                         break;
                     default:
                         System.out.println("Error: Opción incorrecta.");
-                }
+                 }
 
                 if (opcionPed != 0) {
                     presionarEnterParaContinuar(scanner);
