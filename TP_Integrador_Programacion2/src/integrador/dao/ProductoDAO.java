@@ -25,12 +25,15 @@ public class ProductoDAO implements BaseDAO<Producto> {
                 pstmt.setDouble(4, entity.getPrecio());
                 pstmt.setString(5, entity.getDescripcion());
                 pstmt.setInt(6, entity.getStock());
-                pstmt.setString(7, entity.getImagen());
-                pstmt.setBoolean(8, false);
+                
+                String img = (entity.getImagen() != null && !entity.getImagen().trim().isEmpty()) ? entity.getImagen() : "1";
+                pstmt.setString(7, img);
+                
+                pstmt.setBoolean(8, true); // disponible
                 pstmt.setLong(9, entity.getCategoria().getId());
 
                 pstmt.executeUpdate();
-                System.out.println("El producto se guardo correctamente");
+                System.out.println("El producto se guardó correctamente.");
             } catch (SQLException e){
                 System.out.println("Error al crear el producto");
                 e.printStackTrace();
@@ -48,7 +51,7 @@ public class ProductoDAO implements BaseDAO<Producto> {
 
                 while (rs.next()) {
                     Producto p = new Producto();
-                    p.setId(rs.getLong("id_producto"));
+                    p.setId(rs.getLong("id_producto")); 
                     p.setNombre(rs.getString("nombre"));
                     p.setPrecio(rs.getDouble("precio"));
                     p.setDescripcion(rs.getString("descripcion"));
@@ -74,7 +77,7 @@ public class ProductoDAO implements BaseDAO<Producto> {
     @Override
     public Producto readByID(Long id){
         Producto p = null;
-        String sql = "SELECT * FROM producto WHERE id = ? AND eliminado = false";
+        String sql = "SELECT * FROM producto WHERE id_producto = ? AND eliminado = false";
 
         try (Connection conn = ConexionDB.getConexion();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -83,7 +86,7 @@ public class ProductoDAO implements BaseDAO<Producto> {
                 try (ResultSet rs = pstmt.executeQuery()){
                     if (rs.next()) {
                         p = new Producto();
-                        p.setId(rs.getLong("id_producto"));
+                        p.setId(rs.getLong("id_producto")); 
                         p.setNombre(rs.getString("nombre"));
                         p.setPrecio(rs.getDouble("precio"));
                         p.setDescripcion(rs.getString("descripcion"));
@@ -107,7 +110,7 @@ public class ProductoDAO implements BaseDAO<Producto> {
 
     @Override
     public void update(Producto entity){
-        String sql = "UPDATE producto SET nombre = ?, precio = ?, descripcion = ?, stock = ?, imagen = ?, disponible = ?, id_categoria = ? WHERE id = ? AND eliminado = false";
+        String sql = "UPDATE producto SET nombre = ?, precio = ?, descripcion = ?, stock = ?, imagen = ?, disponible = ?, id_categoria = ? WHERE id_producto = ? AND eliminado = false";
 
         try (Connection conn = ConexionDB.getConexion();
             PreparedStatement pstmt = conn.prepareStatement(sql)){
@@ -116,10 +119,14 @@ public class ProductoDAO implements BaseDAO<Producto> {
                 pstmt.setDouble(2, entity.getPrecio());
                 pstmt.setString(3, entity.getDescripcion());
                 pstmt.setInt(4, entity.getStock());
-                pstmt.setLong(8, entity.getId());
-                pstmt.setString(5, entity.getImagen());
+                
+                String img = (entity.getImagen() != null && !entity.getImagen().trim().isEmpty()) ? entity.getImagen() : "1";
+                pstmt.setString(5, img);
+                
                 pstmt.setBoolean(6, entity.isDisponible());
                 pstmt.setLong(7, entity.getCategoria().getId());
+                pstmt.setLong(8, entity.getId()); 
+
                 int filas = pstmt.executeUpdate();
                 if(filas > 0) System.out.println("Producto Actualizado");
             }catch (SQLException e){
@@ -129,7 +136,7 @@ public class ProductoDAO implements BaseDAO<Producto> {
 
     @Override
     public void delete(Long id){
-        String sql = "UPDATE producto SET eliminado = true WHERE id = ?";
+        String sql = "UPDATE producto SET eliminado = true WHERE id_producto = ?";
 
         try (Connection conn = ConexionDB.getConexion();
             PreparedStatement pstmt = conn.prepareStatement(sql)){
