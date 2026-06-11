@@ -82,7 +82,7 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
     @Override
     public Usuario readByID(Long id){
         Usuario u = null;
-        String sql = "SELECT * FROM usuario WHERE id = ? AND eliminado = false";
+        String sql = "SELECT * FROM usuario WHERE id_usuario = ? AND eliminado = false";
 
         try (Connection conn = ConexionDB.getConexion();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -114,7 +114,7 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
 
     @Override
     public void update(Usuario entity){
-        String sql = "UPDATE usuario SET nombre = ?, apellido = ?, celular = ?, contrasenia = ?, rol = ? WHERE id = ? AND eliminado = false";
+        String sql = "UPDATE usuario SET nombre = ?, apellido = ?, celular = ?, contrasenia = ?, rol = ? WHERE id_usuario = ? AND eliminado = false";
 
         try (Connection conn = ConexionDB.getConexion();
             PreparedStatement pstmt = conn.prepareStatement(sql)){
@@ -135,7 +135,7 @@ public class UsuarioDAO implements BaseDAO<Usuario> {
 
     @Override
     public void delete(Long id){
-        String sql = "UPDATE usuario SET eliminado = true WHERE id = ?";
+        String sql = "UPDATE usuario SET eliminado = true WHERE id_usuario = ?";
 
         try (Connection conn = ConexionDB.getConexion();
             PreparedStatement pstmt = conn.prepareStatement(sql)){
