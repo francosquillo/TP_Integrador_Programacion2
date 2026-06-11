@@ -27,14 +27,21 @@ public class Main {
         int opcion = -1;
 
         // # BUCLE DEL MENÚ PRINCIPAL
-        do {
-            System.out.println("\n=== SISTEMA DE PEDIDOS (FOOD STORE) ===");
-            System.out.println("1. Gestión de Categorías");
-            System.out.println("2. Gestión de Productos");
-            System.out.println("3. Gestión de Usuarios");
-            System.out.println("4. Gestión de Pedidos");
-            System.out.println("0. Salir del Sistema");
-            System.out.print("Seleccione una opción: ");
+            do {
+                System.out.println("\n▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄");
+                System.out.println("█                                         █");
+                System.out.println("█   S I S T E M A   D E   P E D I D O S   █");
+                System.out.println("█            ( F O O D  S T O R E )       █");
+                System.out.println("█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█");
+                System.out.println("");
+                System.out.println("         [ 1 ] Gestión de Categorías");
+                System.out.println("         [ 2 ] Gestión de Productos");
+                System.out.println("         [ 3 ] Gestión de Usuarios");
+                System.out.println("         [ 4 ] Gestión de Pedidos");
+                System.out.println("         ---------------------------");
+                System.out.println("         [ 0 ] Salir del Sistema");
+                System.out.println("");
+                System.out.print("   ▶ Seleccione una opción: ");
 
             // # Validación para evitar que el programa se rompa si ingresan letras
             if (scanner.hasNextInt()) {
@@ -78,13 +85,16 @@ public class Main {
     public static void menuCategorias(Scanner scanner) {
         int opcionCat = -1;
         do {
-            System.out.println("\n--- MENÚ CATEGORÍAS ---");
-            System.out.println("1. Listar Categorías");
-            System.out.println("2. Crear Categoría");
-            System.out.println("3. Editar Categoría");
-            System.out.println("4. Eliminar Categoría");
-            System.out.println("0. Volver al Menú Principal");
-            System.out.print("Seleccione: ");
+            System.out.println("\n╔══════════════════════════════════╗");
+            System.out.println("║        MENÚ DE CATEGORÍAS        ║");
+            System.out.println("╠══════════════════════════════════╣");
+            System.out.println("║  [1] Listar Categorías           ║");
+            System.out.println("║  [2] Crear Categoría             ║");
+            System.out.println("║  [3] Editar Categoría            ║");
+            System.out.println("║  [4] Eliminar Categoría          ║");
+            System.out.println("║  [0] Volver al Menú Principal    ║");
+            System.out.println("╚══════════════════════════════════╝");
+            System.out.print("Seleccione una opción: ");
 
             if (scanner.hasNextInt()) {
                 opcionCat = scanner.nextInt();
@@ -92,16 +102,20 @@ public class Main {
 
                 switch (opcionCat) {
                     case 1:
-                        System.out.println("\n--- LISTA DE CATEGORÍAS ---");
+                        System.out.println("\n=======================================================================");
+                        System.out.println("                          LISTA DE CATEGORÍAS");
+                        System.out.println("=======================================================================");
                         List<Categoria> lista = categoriaService.readAll();
                         if (lista == null || lista.isEmpty()) {
                             System.out.println("No hay categorías cargadas.");
                         } else {
+                            System.out.printf("%-6s | %-20s | %-35s\n", "ID", "NOMBRE", "DESCRIPCIÓN");
+                            System.out.println("-----------------------------------------------------------------------");
                             for (Categoria cat : lista) {
-                                System.out.println("ID: " + cat.getId() + " | Nombre: " + cat.getNombre()
-                                        + " | Descripción: " + cat.getDescripcion());
+                                System.out.printf("%-6d | %-20s | %-35s\n", cat.getId(), cat.getNombre(), cat.getDescripcion());
                             }
                         }
+                        System.out.println("=======================================================================\n");
                         break;
 
                     case 2:
@@ -125,7 +139,7 @@ public class Main {
 
                     case 3:
                         System.out.println("\n--- EDITAR CATEGORÍA ---");
-                        System.out.print("Ingrese el ID de la categoría a editar: ");
+                        System.out.print("Ingrese el ID de la categoría a editar: ");   
 
                         if (scanner.hasNextLong()) {
                             Long idEditar = scanner.nextLong();
@@ -224,14 +238,16 @@ public class Main {
         int opcionProd = -1;
 
         do {
-            System.out.println("\n--- MENÚ PRODUCTOS ---");
-            System.out.println("1. Listar Productos");
-            System.out.println("2. Crear Producto");
-            System.out.println("3. Editar Producto");
-            System.out.println("4. Eliminar Producto");
-            System.out.println("0. Volver");
-            System.out.print("Seleccione: ");
-
+            System.out.println("\n╔══════════════════════════════════╗");
+            System.out.println("║         MENÚ DE PRODUCTOS        ║");
+            System.out.println("╠══════════════════════════════════╣");
+            System.out.println("║  [1] Listar Productos            ║");
+            System.out.println("║  [2] Crear Producto              ║");
+            System.out.println("║  [3] Editar Producto             ║");
+            System.out.println("║  [4] Eliminar Producto           ║");
+            System.out.println("║  [0] Volver al Menú Principal    ║");
+            System.out.println("╚══════════════════════════════════╝");
+            System.out.print("Seleccione una opción: ");
             if (scanner.hasNextInt()) {
                 opcionProd = scanner.nextInt();
                 scanner.nextLine();
@@ -239,21 +255,20 @@ public class Main {
                 switch (opcionProd) {
 
                     case 1:
-                        System.out.println("\n--- LISTA DE PRODUCTOS ---");
-
+                        System.out.println("\n=======================================================================");
+                        System.out.println("                           LISTA DE PRODUCTOS");
+                        System.out.println("=======================================================================");
                         List<Producto> productos = productoService.readAll();
-
                         if (productos == null || productos.isEmpty()) {
                             System.out.println("No hay productos cargados.");
                         } else {
+                            System.out.printf("%-6s | %-30s | %-12s | %-8s\n", "ID", "NOMBRE", "PRECIO", "STOCK");
+                            System.out.println("-----------------------------------------------------------------------");
                             for (Producto p : productos) {
-                                System.out.println(
-                                        "ID: " + p.getId()
-                                                + " | Nombre: " + p.getNombre()
-                                                + " | Precio: $" + p.getPrecio()
-                                                + " | Stock: " + p.getStock());
+                                System.out.printf("%-6d | %-30s | $%-11.2f | %-8d\n", p.getId(), p.getNombre(), p.getPrecio(), p.getStock());
                             }
                         }
+                        System.out.println("=======================================================================\n");
                         break;
 
                     case 2:
@@ -376,13 +391,16 @@ public class Main {
     public static void menuUsuarios(Scanner scanner) {
         int opcionUsu = -1;
         do {
-            System.out.println("\n--- MENÚ USUARIOS ---");
-            System.out.println("1. Listar Usuarios");
-            System.out.println("2. Crear Usuario");
-            System.out.println("3. Editar Usuario");
-            System.out.println("4. Eliminar Usuario");
-            System.out.println("0. Volver al Menú Principal");
-            System.out.print("Seleccione: ");
+            System.out.println("\n╔══════════════════════════════════╗");
+            System.out.println("║         MENÚ DE USUARIOS         ║");
+            System.out.println("╠══════════════════════════════════╣");
+            System.out.println("║  [1] Listar Usuarios             ║");
+            System.out.println("║  [2] Crear Usuario               ║");
+            System.out.println("║  [3] Editar Usuario              ║");
+            System.out.println("║  [4] Eliminar Usuario            ║");
+            System.out.println("║  [0] Volver al Menú Principal    ║");
+            System.out.println("╚══════════════════════════════════╝");
+            System.out.print("Seleccione una opción: ");
 
             if (scanner.hasNextInt()) {
                 opcionUsu = scanner.nextInt();
@@ -390,19 +408,22 @@ public class Main {
 
                 switch (opcionUsu) {
                     case 1:
-                        System.out.println("\n--- LISTA DE USUARIOS ---");
-
+                        System.out.println("\n=======================================================================");
+                        System.out.println("                           LISTA DE USUARIOS");
+                        System.out.println("=======================================================================");
                         List<Usuario> listaUsuarios = usuarioService.readAll();
                         if (listaUsuarios == null || listaUsuarios.isEmpty()) {
                             System.out.println("No hay usuarios cargados en el sistema.");
                         } else {
+                            System.out.printf("%-6s | %-25s | %-30s\n", "ID", "NOMBRE", "MAIL");
+                            System.out.println("-----------------------------------------------------------------------");
                             for (Usuario u : listaUsuarios) {
-
-                                System.out.println(
-                                        "ID: " + u.getId() + " | Nombre: " + u.getNombre() + " | Mail: " + u.getMail());
+                                System.out.printf("%-6d | %-25s | %-30s\n", u.getId(), u.getNombre(), u.getMail());
                             }
                         }
+                        System.out.println("=======================================================================\n");
                         break;
+
                     case 2:
                         System.out.println("\n--- REGISTRAR NUEVO USUARIO ---");
                         scanner.nextLine();
@@ -519,13 +540,17 @@ public class Main {
     public static void menuPedidos(Scanner scanner) {
         int opcionPed = -1;
         do {
-            System.out.println("\n--- MENÚ PEDIDOS ---");
-            System.out.println("1. Listar Pedidos");
-            System.out.println("2. Crear Pedido");
-            System.out.println("3. Editar Pedido");
-            System.out.println("4. Eliminar Pedido");
-            System.out.println("0. Volver al Menú Principal");
-            System.out.print("Seleccione: ");
+            System.out.println("\n╔══════════════════════════════════╗");
+            System.out.println("║          MENÚ DE PEDIDOS         ║");
+            System.out.println("╠══════════════════════════════════╣");
+            System.out.println("║  [1] Listar Pedidos              ║");
+            System.out.println("║  [2] Crear Pedido                ║");
+            System.out.println("║  [3] Editar Pedido               ║");
+            System.out.println("║  [4] Eliminar Pedido             ║");
+            System.out.println("║  [0] Volver al Menú Principal    ║");
+            System.out.println("╚══════════════════════════════════╝");
+            System.out.print("Seleccione una opción: ");
+
 
             if (scanner.hasNextInt()) {
                 opcionPed = scanner.nextInt();
@@ -533,21 +558,23 @@ public class Main {
 
                 switch (opcionPed) {
                     case 1: // LISTAR PEDIDOS
-                        System.out.println("\n--- LISTA DE PEDIDOS ---");
+                        System.out.println("\n==========================================================================================");
+                        System.out.println("                                     LISTA DE PEDIDOS");
+                        System.out.println("==========================================================================================");
                         List<Pedido> listaPedidos = pedidoService.readAll();
                         if (listaPedidos.isEmpty()) {
                             System.out.println("No hay pedidos registrados en el sistema.");
                         } else {
+                            System.out.printf("%-8s | %-12s | %-12s | %-12s | %-15s | %-8s\n", "ID PED.", "FECHA", "ESTADO", "TOTAL", "PAGO", "ID USU.");
+                            System.out.println("------------------------------------------------------------------------------------------");
                             for (Pedido p : listaPedidos) {
-                                System.out.println("ID Pedido: " + p.getId() +
-                                        " | Fecha: " + p.getFecha() +
-                                        " | Estado: " + p.getEstado() +
-                                        " | Total: $" + p.getTotal() +
-                                        " | Pago: " + p.getPago() +
-                                        " | ID Usuario: " + p.getUsuario().getId());
+                                System.out.printf("%-8d | %-12s | %-12s | $%-10.2f | %-15s | %-8d\n", 
+                                    p.getId(), p.getFecha().toString(), p.getEstado().toString(), p.getTotal(), p.getPago().toString(), p.getUsuario().getId());
                             }
                         }
+                        System.out.println("==========================================================================================\n");
                         break;
+
                     case 2:
                         System.out.println("\n--- CREAR NUEVO PEDIDO ---");
 
