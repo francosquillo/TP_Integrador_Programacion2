@@ -2,11 +2,14 @@ import java.util.List;
 import java.util.Scanner;
 import entities.Categoria;
 import service.CategoriaService;
+import entities.Producto;
+import service.ProductoService;
 
 public class Main {
     
 // # Instanciamos el servicio de categorías
     private static CategoriaService categoriaService = new CategoriaService();
+    private static ProductoService productoService = new ProductoService();
 
     public static void main(String[] args) {
 // # Inicializamos el scanner
@@ -85,7 +88,7 @@ public class Main {
                             System.out.println("No hay categorías cargadas.");
                         } else {
                             for (Categoria cat : lista) {
-                                System.out.println("ID: " + cat.getId() + " | Nombre: " + cat.getNombre());
+                                System.out.println("ID: " + cat.getId() + " | Nombre: " + cat.getNombre() + " | Descripción: " + cat.getDescripcion());
                             }
                         }
                         break;
@@ -97,6 +100,7 @@ public class Main {
                             System.out.print("Ingrese el nombre de la categoría: ");
                             nombre = scanner.nextLine();
                         }
+                        
                         System.out.print("Ingrese la descripción de la categoría: ");
                         String descripcion = scanner.nextLine();
 
@@ -112,22 +116,17 @@ public class Main {
                         System.out.println("\n--- EDITAR CATEGORÍA ---");
                         System.out.print("Ingrese el ID de la categoría a editar: ");
                         
-                        // # Validamos que el ID ingresado sea un número (Long)
                         if (scanner.hasNextLong()) {
                             Long idEditar = scanner.nextLong();
                             scanner.nextLine(); 
 
-                            // # Buscamos la categoría usando tu método readByID
                             Categoria catEditar = categoriaService.readByID(idEditar);
 
-                            // # Si es null, significa que no existe o fue eliminada
                             if (catEditar == null) {
                                 System.out.println("Error: No se encontró una categoría con el ID " + idEditar);
                             } else {
-                                // # Mostramos el nombre actual para que el usuario sepa qué está editando
                                 System.out.println("Editando la categoría: " + catEditar.getNombre());
                                 
-                                // # Pedimos el nuevo nombre y evitamos que lo deje vacío
                                 String nuevoNombre = "";
                                 while (nuevoNombre.trim().isEmpty()) {
                                     System.out.print("Ingrese el NUEVO nombre: ");
@@ -137,17 +136,15 @@ public class Main {
                                 System.out.print("Ingrese la NUEVA descripción: ");
                                 String nuevaDesc = scanner.nextLine();
 
-                                // # Actualizamos los datos del objeto que trajimos de la base
                                 catEditar.setNombre(nuevoNombre);
                                 catEditar.setDescripcion(nuevaDesc);
 
-                                // # Lo mandamos al service para que ejecute el update
                                 categoriaService.update(catEditar);
                                 System.out.println("Categoría editada exitosamente.");
                             }
                         } else {
                             System.out.println("Error: Ingrese un ID numérico válido.");
-                            scanner.next(); // # Limpiamos la basura ingresada
+                            scanner.next(); 
                         }
                         break;
 
@@ -155,18 +152,15 @@ public class Main {
                         System.out.println("\n--- ELIMINAR CATEGORÍA ---");
                         System.out.print("Ingrese el ID de la categoría a eliminar: ");
                         
-                        // # Volvemos a validar que ingrese un número
                         if (scanner.hasNextLong()) {
                             Long idEliminar = scanner.nextLong();
                             scanner.nextLine(); 
 
-                            // # Buscamos la categoría primero para asegurarnos de que exista
                             Categoria catEliminar = categoriaService.readByID(idEliminar);
 
                             if (catEliminar == null) {
                                 System.out.println("Error: No se encontró la categoría con el ID " + idEliminar);
                             } else {
-                                // # Cumplimos con la consigna: Pedimos confirmación antes de borrar
                                 System.out.println("Atención: Está por eliminar la categoría '" + catEliminar.getNombre() + "'");
                                 System.out.print("¿Está seguro? (1 para SÍ, 0 para NO): ");
                                 
@@ -175,7 +169,6 @@ public class Main {
                                     scanner.nextLine();
                                     
                                     if (confirmacion == 1) {
-                                        // # Si confirma, usamos tu método delete (acordate que la baja lógica la hace el DAO)
                                         categoriaService.delete(idEliminar);
                                         System.out.println("Categoría eliminada del sistema.");
                                     } else {
@@ -214,51 +207,157 @@ public class Main {
     // ==========================================================
     // # SUBMENÚ: PRODUCTOS
     // ==========================================================
+
     public static void menuProductos(Scanner scanner) {
-        int opcionProd = -1;
-        do {
-            System.out.println("\n--- MENÚ PRODUCTOS ---");
-            System.out.println("1. Listar Productos");
-            System.out.println("2. Crear Producto");
-            System.out.println("3. Editar Producto");
-            System.out.println("4. Eliminar Producto");
-            System.out.println("0. Volver al Menú Principal");
-            System.out.print("Seleccione: ");
+    int opcionProd = -1;
 
-            if (scanner.hasNextInt()) {
-                opcionProd = scanner.nextInt();
-                scanner.nextLine(); 
+    do {
+        System.out.println("\n--- MENÚ PRODUCTOS ---");
+        System.out.println("1. Listar Productos");
+        System.out.println("2. Crear Producto");
+        System.out.println("3. Editar Producto");
+        System.out.println("4. Eliminar Producto");
+        System.out.println("0. Volver");
+        System.out.print("Seleccione: ");
 
-                switch (opcionProd) {
-                    case 1:
-                        System.out.println("Listando productos... (Función en construcción)");
-                        break;
-                    case 2:
-                        System.out.println("Creando producto... (Función en construcción)");
-                        break;
-                    case 3:
-                        System.out.println("Editando producto... (Función en construcción)");
-                        break;
-                    case 4:
-                        System.out.println("Eliminando producto... (Función en construcción)");
-                        break;
-                    case 0:
-                        System.out.println("Volviendo...");
-                        break;
-                    default:
-                        System.out.println("Error: Opción incorrecta.");
+        if (scanner.hasNextInt()) {
+            opcionProd = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (opcionProd) {
+
+                case 1:
+                    System.out.println("\n--- LISTA DE PRODUCTOS ---");
+
+                    List<Producto> productos = productoService.readAll();
+
+                    if (productos == null || productos.isEmpty()) {
+                        System.out.println("No hay productos cargados.");
+                    } else {
+                        for (Producto p : productos) {
+                            System.out.println(
+                                "ID: " + p.getId()
+                                + " | Nombre: " + p.getNombre()
+                                + " | Precio: $" + p.getPrecio()
+                                + " | Stock: " + p.getStock()
+                            );
+                        }
+                    }
+                    break;
+
+                case 2:
+                System.out.println("\n--- CREAR PRODUCTO ---");
+            
+                System.out.print("Nombre: ");
+                String nombre = scanner.nextLine();
+            
+                System.out.print("Descripción: ");
+                String descripcion = scanner.nextLine();
+            
+                System.out.print("Precio: ");
+                double precio = scanner.nextDouble();
+            
+                System.out.print("Stock: ");
+                int stock = scanner.nextInt();
+                scanner.nextLine();
+            
+                // Pedir categoría
+                System.out.print("ID de categoría: ");
+                Long idCategoria = scanner.nextLong();
+                scanner.nextLine();
+            
+                Categoria categoria = categoriaService.readByID(idCategoria);
+            
+                if (categoria == null) {
+                    System.out.println("Categoría no encontrada.");
+                    break;
                 }
+            
+                Producto nuevoProducto = new Producto();
+            
+                nuevoProducto.setNombre(nombre);
+                nuevoProducto.setDescripcion(descripcion);
+                nuevoProducto.setPrecio(precio);
+                nuevoProducto.setStock(stock);
+            
+                // Asignar categoría al producto
+                nuevoProducto.setCategoria(categoria);
+            
+                productoService.create(nuevoProducto);
+            
+                System.out.println("Producto creado correctamente.");
+                break;
 
-                if (opcionProd != 0) {
-                    presionarEnterParaContinuar(scanner);
-                }
-            } else {
-                System.out.println("Error: Ingrese un número.");
-                scanner.next();
+                case 3:
+
+                    System.out.print("Ingrese ID del producto: ");
+
+                    if (scanner.hasNextLong()) {
+
+                        Long idEditar = scanner.nextLong();
+                        scanner.nextLine();
+
+                        Producto producto = productoService.readByID(idEditar);
+
+                        if (producto == null) {
+                            System.out.println("Producto no encontrado.");
+                        } else {
+
+                            System.out.print("Nuevo nombre: ");
+                            producto.setNombre(scanner.nextLine());
+
+                            System.out.print("Nueva descripción: ");
+                            producto.setDescripcion(scanner.nextLine());
+
+                            System.out.print("Nuevo precio: ");
+                            producto.setPrecio(scanner.nextDouble());
+
+                            System.out.print("Nuevo stock: ");
+                            producto.setStock(scanner.nextInt());
+                            scanner.nextLine();
+
+                            productoService.update(producto);
+
+                            System.out.println("Producto actualizado.");
+                        }
+                    }
+                    break;
+
+                case 4:
+
+                    System.out.print("Ingrese ID del producto: ");
+
+                    if (scanner.hasNextLong()) {
+
+                        Long idEliminar = scanner.nextLong();
+                        scanner.nextLine();
+
+                        productoService.delete(idEliminar);
+
+                        System.out.println("Producto eliminado.");
+                    }
+
+                    break;
+
+                case 0:
+                    System.out.println("Volviendo...");
+                    break;
+
+                default:
+                    System.out.println("Opción incorrecta.");
+            }
+
+            if (opcionProd != 0) {
                 presionarEnterParaContinuar(scanner);
             }
-        } while (opcionProd != 0);
-    }
+
+        } else {
+            System.out.println("Ingrese un número válido.");
+            scanner.next();
+        }
+
+    } while (opcionProd != 0);
+}
 
     // ==========================================================
     // # SUBMENÚ: USUARIOS

@@ -60,7 +60,7 @@ public class CategoriaDAO implements BaseDAO<Categoria> {
     @Override
     public Categoria readByID(Long id){
         Categoria c = null;
-        String sql = "SELECT * FROM categoria WHERE id = ? AND eliminado = false";
+        String sql = "SELECT * FROM categoria WHERE id_categoria = ? AND eliminado = false";
 
         try (Connection conn = ConexionDB.getConexion();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -85,7 +85,7 @@ public class CategoriaDAO implements BaseDAO<Categoria> {
 
     @Override
     public void update(Categoria entity){
-        String sql = "UPDATE categoria SET nombre = ?, descripcion = ? WHERE id = ? AND eliminado = false";
+        String sql = "UPDATE categoria SET nombre = ?, descripcion = ? WHERE id_categoria = ? AND eliminado = false";
 
         try (Connection conn = ConexionDB.getConexion();
             PreparedStatement pstmt = conn.prepareStatement(sql)){
@@ -103,7 +103,7 @@ public class CategoriaDAO implements BaseDAO<Categoria> {
 
     @Override
     public void delete(Long id){
-        String sql = "UPDATE categoria SET eliminado = true WHERE id = ?";
+        String sql = "UPDATE categoria SET eliminado = true WHERE id_categoria = ?";
 
         try (Connection conn = ConexionDB.getConexion();
             PreparedStatement pstmt = conn.prepareStatement(sql)){
