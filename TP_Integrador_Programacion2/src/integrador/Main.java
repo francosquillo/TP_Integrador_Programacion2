@@ -562,14 +562,14 @@ public class Main {
                         }
 
                         String contra = "";
-                        while (contra.trim().isEmpty()) {
+                        // Verificamos que la longitud sea menor a 4 en lugar de solo si está vacía
+                        while (contra.trim().length() < 4) {
                             System.out.print("Contraseña: ");
                             contra = scanner.nextLine();
-                            if (contra.trim().isEmpty()) {
-                                System.out.println("Error: La contraseña no puede estar vacía.");
+                            if (contra.trim().length() < 4) {
+                                System.out.println("Error: La contraseña debe tener al menos 4 caracteres.");
                             }
                         }
-
                         Usuario nuevoUsuario = new Usuario();
                         nuevoUsuario.setNombre(nom.trim());
                         nuevoUsuario.setApellido(ape.trim());
@@ -647,7 +647,12 @@ public class Main {
 
                             System.out.print("Nueva Contraseña: ");
                             String nuevaContra = scanner.nextLine();
-                            if (!nuevaContra.trim().isEmpty()){
+                            if (!nuevaContra.trim().isEmpty()) {
+                                while (nuevaContra.trim().length() < 4) {
+                                System.out.println("Error: La contraseña debe tener al menos 4 caracteres.");
+                                System.out.print("Nueva Contraseña: ");
+                                nuevaContra = scanner.nextLine();
+                                }
                                 usuarioEditar.setContrasenia(nuevaContra);
                             }
 
