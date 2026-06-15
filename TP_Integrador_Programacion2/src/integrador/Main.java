@@ -27,21 +27,21 @@ public class Main {
         int opcion = -1;
 
         // # BUCLE DEL MENÚ PRINCIPAL
-        do {
-            System.out.println("\n▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄");
-            System.out.println("█                                         █");
-            System.out.println("█   S I S T E M A   D E   P E D I D O S   █");
-            System.out.println("█            ( F O O D  S T O R E )       █");
-            System.out.println("█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█");
-            System.out.println("");
-            System.out.println("         [ 1 ] Gestión de Categorías");
-            System.out.println("         [ 2 ] Gestión de Productos");
-            System.out.println("         [ 3 ] Gestión de Usuarios");
-            System.out.println("         [ 4 ] Gestión de Pedidos");
-            System.out.println("         ---------------------------");
-            System.out.println("         [ 0 ] Salir del Sistema");
-            System.out.println("");
-            System.out.print("   ▶ Seleccione una opción: ");
+            do {
+                System.out.println("\n▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄");
+                System.out.println("█                                         █");
+                System.out.println("█   S I S T E M A   D E   P E D I D O S   █");
+                System.out.println("█            ( F O O D  S T O R E )       █");
+                System.out.println("█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█");
+                System.out.println("");
+                System.out.println("         [ 1 ] Gestión de Categorías");
+                System.out.println("         [ 2 ] Gestión de Productos");
+                System.out.println("         [ 3 ] Gestión de Usuarios");
+                System.out.println("         [ 4 ] Gestión de Pedidos");
+                System.out.println("         ---------------------------");
+                System.out.println("         [ 0 ] Salir del Sistema");
+                System.out.println("");
+                System.out.print("   ▶ Seleccione una opción: ");
 
             // # Validación para evitar que el programa se rompa si ingresan letras
             if (scanner.hasNextInt()) {
@@ -121,27 +121,17 @@ public class Main {
                     case 2:
                         System.out.println("\n--- CREAR NUEVA CATEGORÍA ---");
                         String nombre = "";
-                        
-                        while (nombre.trim().isEmpty() || nombre.matches(".*\\d.*")) {
+                        while (nombre.trim().isEmpty()) {
                             System.out.print("Ingrese el nombre de la categoría: ");
                             nombre = scanner.nextLine();
-                            if (nombre.trim().isEmpty() || nombre.matches(".*\\d.*")) {
-                                System.out.println("Error: El nombre no puede contener números ni estar vacío.");
-                            }
                         }
 
-                        String descripcion = "";
-                        while (descripcion.trim().isEmpty()) {
-                            System.out.print("Ingrese la descripción de la categoría: ");
-                            descripcion = scanner.nextLine();
-                            if (descripcion.trim().isEmpty()) {
-                                System.out.println("Error: La descripción no puede estar vacía.");
-                            }
-                        }
+                        System.out.print("Ingrese la descripción de la categoría: ");
+                        String descripcion = scanner.nextLine();
 
                         Categoria nuevaCategoria = new Categoria();
-                        nuevaCategoria.setNombre(nombre.trim());
-                        nuevaCategoria.setDescripcion(descripcion.trim());
+                        nuevaCategoria.setNombre(nombre);
+                        nuevaCategoria.setDescripcion(descripcion);
 
                         categoriaService.create(nuevaCategoria);
                         System.out.println("Categoría enviada para su creación.");
@@ -149,89 +139,75 @@ public class Main {
 
                     case 3:
                         System.out.println("\n--- EDITAR CATEGORÍA ---");
-                        long idEditar = -1;
-                        while (idEditar < 0) {
-                            System.out.print("Ingrese el ID de la categoría a editar: ");
-                            if (scanner.hasNextLong()) {
-                                idEditar = scanner.nextLong();
-                                if (idEditar < 0) System.out.println("Error: El ID no puede ser negativo.");
+                        System.out.print("Ingrese el ID de la categoría a editar: ");   
+
+                        if (scanner.hasNextLong()) {
+                            Long idEditar = scanner.nextLong();
+                            scanner.nextLine();
+
+                            Categoria catEditar = categoriaService.readByID(idEditar);
+
+                            if (catEditar == null) {
+                                System.out.println("Error: No se encontró una categoría con el ID " + idEditar);
                             } else {
-                                System.out.println("Error: Ingrese un ID numérico válido.");
-                                scanner.next();
-                            }
-                        }
-                        scanner.nextLine(); 
+                                System.out.println("Editando la categoría: " + catEditar.getNombre());
 
-                        Categoria catEditar = categoriaService.readByID(idEditar);
-
-                        if (catEditar == null) {
-                            System.out.println("Error: No se encontró una categoría con el ID " + idEditar);
-                        } else {
-                            System.out.println("Editando la categoría: " + catEditar.getNombre());
-
-                            String nuevoNombre = "";
-                            while (nuevoNombre.trim().isEmpty() || nuevoNombre.matches(".*\\d.*")) {
-                                System.out.print("Ingrese el NUEVO nombre: ");
-                                nuevoNombre = scanner.nextLine();
-                                if (nuevoNombre.trim().isEmpty() || nuevoNombre.matches(".*\\d.*")) {
-                                    System.out.println("Error: El nombre no puede contener números ni estar vacío.");
+                                String nuevoNombre = "";
+                                while (nuevoNombre.trim().isEmpty()) {
+                                    System.out.print("Ingrese el NUEVO nombre: ");
+                                    nuevoNombre = scanner.nextLine();
                                 }
-                            }
 
-                            String nuevaDesc = "";
-                            while (nuevaDesc.trim().isEmpty()) {
                                 System.out.print("Ingrese la NUEVA descripción: ");
-                                nuevaDesc = scanner.nextLine();
-                                if (nuevaDesc.trim().isEmpty()) {
-                                    System.out.println("Error: La descripción no puede estar vacía.");
-                                }
+                                String nuevaDesc = scanner.nextLine();
+
+                                catEditar.setNombre(nuevoNombre);
+                                catEditar.setDescripcion(nuevaDesc);
+
+                                categoriaService.update(catEditar);
+                                System.out.println("Categoría editada exitosamente.");
                             }
-
-                            catEditar.setNombre(nuevoNombre.trim());
-                            catEditar.setDescripcion(nuevaDesc.trim());
-
-                            categoriaService.update(catEditar);
-                            System.out.println("Categoría editada exitosamente.");
+                        } else {
+                            System.out.println("Error: Ingrese un ID numérico válido.");
+                            scanner.next();
                         }
                         break;
 
                     case 4:
                         System.out.println("\n--- ELIMINAR CATEGORÍA ---");
-                        long idEliminar = -1;
-                        while (idEliminar < 0) {
-                            System.out.print("Ingrese el ID de la categoría a eliminar: ");
-                            if (scanner.hasNextLong()) {
-                                idEliminar = scanner.nextLong();
-                                if (idEliminar < 0) System.out.println("Error: El ID no puede ser negativo.");
+                        System.out.print("Ingrese el ID de la categoría a eliminar: ");
+
+                        if (scanner.hasNextLong()) {
+                            Long idEliminar = scanner.nextLong();
+                            scanner.nextLine();
+
+                            Categoria catEliminar = categoriaService.readByID(idEliminar);
+
+                            if (catEliminar == null) {
+                                System.out.println("Error: No se encontró la categoría con el ID " + idEliminar);
                             } else {
-                                System.out.println("Error: Ingrese un ID numérico válido.");
-                                scanner.next();
-                            }
-                        }
-                        scanner.nextLine();
+                                System.out.println(
+                                        "Atención: Está por eliminar la categoría '" + catEliminar.getNombre() + "'");
+                                System.out.print("¿Está seguro? (1 para SÍ, 0 para NO): ");
 
-                        Categoria catEliminar = categoriaService.readByID(idEliminar);
+                                if (scanner.hasNextInt()) {
+                                    int confirmacion = scanner.nextInt();
+                                    scanner.nextLine();
 
-                        if (catEliminar == null) {
-                            System.out.println("Error: No se encontró la categoría con el ID " + idEliminar);
-                        } else {
-                            System.out.println("Atención: Está por eliminar la categoría '" + catEliminar.getNombre() + "'");
-                            System.out.print("¿Está seguro? (1 para SÍ, 0 para NO): ");
-
-                            if (scanner.hasNextInt()) {
-                                int confirmacion = scanner.nextInt();
-                                scanner.nextLine();
-
-                                if (confirmacion == 1) {
-                                    categoriaService.delete(idEliminar);
-                                    System.out.println("Categoría eliminada del sistema.");
+                                    if (confirmacion == 1) {
+                                        categoriaService.delete(idEliminar);
+                                        System.out.println("Categoría eliminada del sistema.");
+                                    } else {
+                                        System.out.println("Operación cancelada. No se borró nada.");
+                                    }
                                 } else {
-                                    System.out.println("Operación cancelada. No se borró nada.");
+                                    System.out.println("Entrada no válida. Operación cancelada por seguridad.");
+                                    scanner.next();
                                 }
-                            } else {
-                                System.out.println("Entrada no válida. Operación cancelada por seguridad.");
-                                scanner.next();
                             }
+                        } else {
+                            System.out.println("Error: Ingrese un ID numérico válido.");
+                            scanner.next();
                         }
                         break;
 
@@ -298,169 +274,95 @@ public class Main {
                     case 2:
                         System.out.println("\n--- CREAR PRODUCTO ---");
 
-                        String nombre = "";
-                        while (nombre.trim().isEmpty() || nombre.matches(".*\\d.*")) {
-                            System.out.print("Nombre: ");
-                            nombre = scanner.nextLine();
-                            if (nombre.trim().isEmpty() || nombre.matches(".*\\d.*")) {
-                                System.out.println("Error: El nombre no puede contener números ni estar vacío.");
-                            }
-                        }
+                        System.out.print("Nombre: ");
+                        String nombre = scanner.nextLine();
 
-                        String descripcion = "";
-                        while (descripcion.trim().isEmpty()) {
-                            System.out.print("Descripción: ");
-                            descripcion = scanner.nextLine();
-                            if (descripcion.trim().isEmpty()) {
-                                System.out.println("Error: La descripción no puede estar vacía.");
-                            }
-                        }
+                        System.out.print("Descripción: ");
+                        String descripcion = scanner.nextLine();
 
-                        double precio = -1;
-                        while (precio < 0) {
-                            System.out.print("Precio: ");
-                            if (scanner.hasNextDouble()) {
-                                precio = scanner.nextDouble();
-                                if (precio < 0) System.out.println("Error: El precio no puede ser negativo.");
-                            } else {
-                                System.out.println("Error: Tiene que ingresar un número válido (ej: 1500 o 1500.50).");
-                                scanner.next();
-                            }
-                        }
+                        System.out.print("Precio: ");
+                        double precio = scanner.nextDouble();
 
-                        int stock = -1;
-                        while (stock < 0) {
-                            System.out.print("Stock: ");
-                            if (scanner.hasNextInt()) {
-                                stock = scanner.nextInt();
-                                if (stock < 0) System.out.println("Error: El stock no puede ser negativo.");
-                            } else {
-                                System.out.println("Error: Tiene que ingresar un número válido.");
-                                scanner.next();
-                            }
-                        }
-                        scanner.nextLine(); // Limpiar buffer
+                        System.out.print("Stock: ");
+                        int stock = scanner.nextInt();
+                        scanner.nextLine();
 
-                        long idCategoria = -1;
-                        while (idCategoria < 0) {
-                            System.out.print("ID de categoría: ");
-                            if (scanner.hasNextLong()) {
-                                idCategoria = scanner.nextLong();
-                                if (idCategoria < 0) System.out.println("Error: El ID no puede ser negativo.");
-                            } else {
-                                System.out.println("Error: Ingrese un ID numérico válido.");
-                                scanner.next();
-                            }
-                        }
+                        // Pedir categoría
+                        System.out.print("ID de categoría: ");
+                        Long idCategoria = scanner.nextLong();
                         scanner.nextLine();
 
                         Categoria categoria = categoriaService.readByID(idCategoria);
 
                         if (categoria == null) {
-                            System.out.println("Error: Categoría no encontrada.");
+                            System.out.println("Categoría no encontrada.");
                             break;
                         }
 
                         Producto nuevoProducto = new Producto();
-                        nuevoProducto.setNombre(nombre.trim());
-                        nuevoProducto.setDescripcion(descripcion.trim());
+
+                        nuevoProducto.setNombre(nombre);
+                        nuevoProducto.setDescripcion(descripcion);
                         nuevoProducto.setPrecio(precio);
                         nuevoProducto.setStock(stock);
+
+                        // Asignar categoría al producto
                         nuevoProducto.setCategoria(categoria);
 
                         productoService.create(nuevoProducto);
+
                         System.out.println("Producto creado correctamente.");
                         break;
 
                     case 3:
-                        System.out.println("\n--- EDITAR PRODUCTO ---");
-                        long idProdEditar = -1;
-                        while (idProdEditar < 0) {
-                            System.out.print("Ingrese ID del producto a editar: ");
-                            if (scanner.hasNextLong()) {
-                                idProdEditar = scanner.nextLong();
-                                if (idProdEditar < 0) System.out.println("Error: El ID no puede ser negativo.");
+
+                        System.out.print("Ingrese ID del producto: ");
+
+                        if (scanner.hasNextLong()) {
+
+                            Long idEditar = scanner.nextLong();
+                            scanner.nextLine();
+
+                            Producto producto = productoService.readByID(idEditar);
+
+                            if (producto == null) {
+                                System.out.println("Producto no encontrado.");
                             } else {
-                                System.out.println("Error: Ingrese un ID numérico válido.");
-                                scanner.next();
-                            }
-                        }
-                        scanner.nextLine();
 
-                        Producto producto = productoService.readByID(idProdEditar);
-
-                        if (producto == null) {
-                            System.out.println("Error: Producto no encontrado.");
-                        } else {
-                            String nuevoNombre = "";
-                            while (nuevoNombre.trim().isEmpty() || nuevoNombre.matches(".*\\d.*")) {
                                 System.out.print("Nuevo nombre: ");
-                                nuevoNombre = scanner.nextLine();
-                                if (nuevoNombre.trim().isEmpty() || nuevoNombre.matches(".*\\d.*")) {
-                                    System.out.println("Error: El nombre no puede contener números ni estar vacío.");
-                                }
-                            }
-                            producto.setNombre(nuevoNombre.trim());
+                                producto.setNombre(scanner.nextLine());
 
-                            String nuevaDesc = "";
-                            while (nuevaDesc.trim().isEmpty()) {
                                 System.out.print("Nueva descripción: ");
-                                nuevaDesc = scanner.nextLine();
-                                if (nuevaDesc.trim().isEmpty()) {
-                                    System.out.println("Error: La descripción no puede estar vacía.");
-                                }
-                            }
-                            producto.setDescripcion(nuevaDesc.trim());
+                                producto.setDescripcion(scanner.nextLine());
 
-                            double nuevoPrecio = -1;
-                            while (nuevoPrecio < 0) {
                                 System.out.print("Nuevo precio: ");
-                                if (scanner.hasNextDouble()) {
-                                    nuevoPrecio = scanner.nextDouble();
-                                    if (nuevoPrecio < 0) System.out.println("Error: El precio no puede ser negativo.");
-                                } else {
-                                    System.out.println("Error: Tiene que ingresar un número válido.");
-                                    scanner.next();
-                                }
-                            }
-                            producto.setPrecio(nuevoPrecio);
+                                producto.setPrecio(scanner.nextDouble());
 
-                            int nuevoStock = -1;
-                            while (nuevoStock < 0) {
                                 System.out.print("Nuevo stock: ");
-                                if (scanner.hasNextInt()) {
-                                    nuevoStock = scanner.nextInt();
-                                    if (nuevoStock < 0) System.out.println("Error: El stock no puede ser negativo.");
-                                } else {
-                                    System.out.println("Error: Tiene que ingresar un número válido.");
-                                    scanner.next();
-                                }
-                            }
-                            scanner.nextLine(); // Limpiar buffer
-                            producto.setStock(nuevoStock);
+                                producto.setStock(scanner.nextInt());
+                                scanner.nextLine();
 
-                            productoService.update(producto);
-                            System.out.println("Producto actualizado exitosamente.");
+                                productoService.update(producto);
+
+                                System.out.println("Producto actualizado.");
+                            }
                         }
                         break;
 
                     case 4:
-                        System.out.println("\n--- ELIMINAR PRODUCTO ---");
-                        long idProdEliminar = -1;
-                        while (idProdEliminar < 0) {
-                            System.out.print("Ingrese ID del producto a eliminar: ");
-                            if (scanner.hasNextLong()) {
-                                idProdEliminar = scanner.nextLong();
-                                if (idProdEliminar < 0) System.out.println("Error: El ID no puede ser negativo.");
-                            } else {
-                                System.out.println("Error: Ingrese un ID numérico válido.");
-                                scanner.next();
-                            }
+
+                        System.out.print("Ingrese ID del producto: ");
+
+                        if (scanner.hasNextLong()) {
+
+                            Long idEliminar = scanner.nextLong();
+                            scanner.nextLine();
+
+                            productoService.delete(idEliminar);
+
+                            System.out.println("Producto eliminado.");
                         }
-                        scanner.nextLine();
-                        
-                        productoService.delete(idProdEliminar);
-                        System.out.println("Producto eliminado.");
+
                         break;
 
                     case 0:
@@ -478,7 +380,6 @@ public class Main {
             } else {
                 System.out.println("Ingrese un número válido.");
                 scanner.next();
-                presionarEnterParaContinuar(scanner);
             }
 
         } while (opcionProd != 0);
@@ -525,160 +426,80 @@ public class Main {
 
                     case 2:
                         System.out.println("\n--- REGISTRAR NUEVO USUARIO ---");
-                        String nom = "";
-                        while (!nom.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$") || nom.trim().isEmpty()) {
-                            System.out.print("Nombre: ");
-                            nom = scanner.nextLine();
-                            if (!nom.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$") || nom.trim().isEmpty()) {
-                                System.out.println("Error: Tiene que ingresar solo letras y no puede dejarlo vacío.");
-                            }
-                        }
+                        scanner.nextLine();
 
-                        String ape = "";
-                        while (!ape.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$") || ape.trim().isEmpty()) {
-                            System.out.print("Apellido: ");
-                            ape = scanner.nextLine();
-                            if (!ape.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$") || ape.trim().isEmpty()) {
-                                System.out.println("Error: Tiene que ingresar solo letras y no puede dejarlo vacío.");
-                            }
-                        }
+                        System.out.print("Nombre: ");
+                        String nom = scanner.nextLine();
 
-                        String correo = "";
-                        while (!correo.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
-                            System.out.print("Mail: ");
-                            correo = scanner.nextLine();
-                            if (!correo.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
-                                System.out.println("Error: Por favor, ingrese un correo válido que contenga '@' y un dominio.(ejemplo@correo.com)");
-                            }
-                        }
+                        System.out.print("Apellido: ");
+                        String ape = scanner.nextLine();
 
-                        String cel = "";
-                        while (!cel.matches("\\d+")) {
-                            System.out.print("Celular: ");
-                            cel = scanner.nextLine();
-                            if (!cel.matches("\\d+")) {
-                                System.out.println("Error: Tiene que ingresar solo números para el celular.");
-                            }
-                        }
+                        System.out.print("Mail: ");
+                        String correo = scanner.nextLine();
 
-                        String contra = "";
-                        // Verificamos que la longitud sea menor a 4 en lugar de solo si está vacía
-                        while (contra.trim().length() < 4) {
-                            System.out.print("Contraseña: ");
-                            contra = scanner.nextLine();
-                            if (contra.trim().length() < 4) {
-                                System.out.println("Error: La contraseña debe tener al menos 4 caracteres.");
-                            }
-                        }
+                        System.out.print("Celular: ");
+                        String cel = scanner.nextLine();
+
+                        System.out.print("Contraseña: ");
+                        String contra = scanner.nextLine();
+
+                        // Creamos el objeto y le pasamos todas las variables
                         Usuario nuevoUsuario = new Usuario();
-                        nuevoUsuario.setNombre(nom.trim());
-                        nuevoUsuario.setApellido(ape.trim());
+                        nuevoUsuario.setNombre(nom);
+                        nuevoUsuario.setApellido(ape);
                         nuevoUsuario.setMail(correo);
                         nuevoUsuario.setCelular(cel);
                         nuevoUsuario.setContrasenia(contra);
 
                         usuarioService.create(nuevoUsuario);
-                        System.out.println("Usuario registrado correctamente.");
                         break;
-
                     case 3:
                         System.out.println("\n--- MODIFICAR USUARIO ---");
-                        long idUsuModificar = -1;
-                        while (idUsuModificar < 0) {
-                            System.out.print("Ingrese el ID del usuario a modificar: ");
-                            if (scanner.hasNextLong()) {
-                                idUsuModificar = scanner.nextLong();
-                                if (idUsuModificar < 0) System.out.println("Error: El ID no puede ser negativo.");
-                            } else {
-                                System.out.println("Error: Ingrese un ID numérico válido.");
-                                scanner.next();
-                            }
-                        }
-                        scanner.nextLine();
+                        System.out.print("Ingrese el ID del usuario a modificar: ");
+                        long idModificar = scanner.nextLong();
+                        scanner.nextLine(); // Limpia el buffer
 
-                        Usuario usuarioEditar = usuarioService.readByID(idUsuModificar);
+                        Usuario usuarioEditar = usuarioService.readByID(idModificar);
 
                         if (usuarioEditar != null) {
                             System.out.println("Usuario encontrado: " + usuarioEditar.getNombre() + " "
                                     + usuarioEditar.getApellido());
                             System.out.println("(Deje en blanco y presione Enter para mantener el dato actual)");
 
-                            boolean validNom = false;
-                            while(!validNom) {
-                                System.out.print("Nuevo Nombre [" + usuarioEditar.getNombre() + "]: ");
-                                String nuevoNom = scanner.nextLine();
-                                if(nuevoNom.trim().isEmpty()) {
-                                    validNom = true;
-                                } else if(nuevoNom.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$")) {
-                                    usuarioEditar.setNombre(nuevoNom);
-                                    validNom = true;
-                                } else {
-                                    System.out.println("Error: El nombre solo puede contener letras.");
-                                }
-                            }
+                            System.out.print("Nuevo Nombre [" + usuarioEditar.getNombre() + "]: ");
+                            String nuevoNom = scanner.nextLine();
+                            if (!nuevoNom.trim().isEmpty())
+                                usuarioEditar.setNombre(nuevoNom);
 
-                            boolean validApe = false;
-                            while(!validApe) {
-                                System.out.print("Nuevo Apellido [" + usuarioEditar.getApellido() + "]: ");
-                                String nuevoApe = scanner.nextLine();
-                                if(nuevoApe.trim().isEmpty()) {
-                                    validApe = true;
-                                } else if(nuevoApe.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$")) {
-                                    usuarioEditar.setApellido(nuevoApe);
-                                    validApe = true;
-                                } else {
-                                    System.out.println("Error: El apellido solo puede contener letras.");
-                                }
-                            }
+                            System.out.print("Nuevo Apellido [" + usuarioEditar.getApellido() + "]: ");
+                            String nuevoApe = scanner.nextLine();
+                            if (!nuevoApe.trim().isEmpty())
+                                usuarioEditar.setApellido(nuevoApe);
 
-                            boolean validCel = false;
-                            while(!validCel) {
-                                System.out.print("Nuevo Celular [" + usuarioEditar.getCelular() + "]: ");
-                                String nuevoCel = scanner.nextLine();
-                                if(nuevoCel.trim().isEmpty()) {
-                                    validCel = true;
-                                } else if(nuevoCel.matches("\\d+")) {
-                                    usuarioEditar.setCelular(nuevoCel);
-                                    validCel = true;
-                                } else {
-                                    System.out.println("Error: El celular solo puede contener números.");
-                                }
-                            }
+                            System.out.print("Nuevo Celular [" + usuarioEditar.getCelular() + "]: ");
+                            String nuevoCel = scanner.nextLine();
+                            if (!nuevoCel.trim().isEmpty())
+                                usuarioEditar.setCelular(nuevoCel);
 
                             System.out.print("Nueva Contraseña: ");
                             String nuevaContra = scanner.nextLine();
-                            if (!nuevaContra.trim().isEmpty()) {
-                                while (nuevaContra.trim().length() < 4) {
-                                System.out.println("Error: La contraseña debe tener al menos 4 caracteres.");
-                                System.out.print("Nueva Contraseña: ");
-                                nuevaContra = scanner.nextLine();
-                                }
+                            if (!nuevaContra.trim().isEmpty())
                                 usuarioEditar.setContrasenia(nuevaContra);
-                            }
 
                             usuarioService.update(usuarioEditar);
-                            System.out.println("Usuario modificado exitosamente.");
                         } else {
-                            System.out.println("No se encontró ningún usuario activo con el ID: " + idUsuModificar);
+                            System.out.println("No se encontró ningún usuario activo con el ID: " + idModificar);
                         }
                         break;
 
                     case 4:
                         System.out.println("\n--- ELIMINAR USUARIO ---");
-                        long idUsuEliminar = -1;
-                        while (idUsuEliminar < 0) {
-                            System.out.print("Ingrese el ID del usuario a eliminar: ");
-                            if (scanner.hasNextLong()) {
-                                idUsuEliminar = scanner.nextLong();
-                                if (idUsuEliminar < 0) System.out.println("Error: El ID no puede ser negativo.");
-                            } else {
-                                System.out.println("Error: Ingrese un ID numérico válido.");
-                                scanner.next();
-                            }
-                        }
-                        scanner.nextLine(); 
+                        System.out.print("Ingrese el ID del usuario a eliminar: ");
+                        long idEliminar = scanner.nextLong();
+                        scanner.nextLine(); // Limpia el buffer
 
-                        Usuario usuarioEliminar = usuarioService.readByID(idUsuEliminar);
+                        // Verificamos si existe antes de borrar
+                        Usuario usuarioEliminar = usuarioService.readByID(idEliminar);
 
                         if (usuarioEliminar != null) {
                             System.out.print("¿Seguro que desea eliminar a " + usuarioEliminar.getNombre() + " "
@@ -686,16 +507,15 @@ public class Main {
                             String confirma = scanner.nextLine();
 
                             if (confirma.equalsIgnoreCase("S")) {
-                                usuarioService.delete(idUsuEliminar);
-                                System.out.println("Usuario eliminado.");
+                                usuarioService.delete(idEliminar);
+
                             } else {
                                 System.out.println("Eliminación cancelada.");
                             }
                         } else {
-                            System.out.println("No se encontró ningún usuario activo con el ID: " + idUsuEliminar);
+                            System.out.println("No se encontró ningún usuario activo con el ID: " + idEliminar);
                         }
                         break;
-                        
                     case 0:
                         System.out.println("Saliendo del menu Usuarios...");
                         break;
@@ -731,12 +551,13 @@ public class Main {
             System.out.println("╚══════════════════════════════════╝");
             System.out.print("Seleccione una opción: ");
 
+
             if (scanner.hasNextInt()) {
                 opcionPed = scanner.nextInt();
                 scanner.nextLine();
 
                 switch (opcionPed) {
-                    case 1: 
+                    case 1: // LISTAR PEDIDOS
                         System.out.println("\n==========================================================================================");
                         System.out.println("                                     LISTA DE PEDIDOS");
                         System.out.println("==========================================================================================");
@@ -753,22 +574,13 @@ public class Main {
                         }
                         System.out.println("==========================================================================================\n");
                         break;
-                        
+
                     case 2:
                         System.out.println("\n--- CREAR NUEVO PEDIDO ---");
 
-                        // 1. Datos basicos
-                        long idUsu = -1;
-                        while (idUsu < 0) {
-                            System.out.print("Ingrese el ID del Usuario: ");
-                            if (scanner.hasNextLong()) {
-                                idUsu = scanner.nextLong();
-                                if (idUsu < 0) System.out.println("Error: El ID no puede ser negativo.");
-                            } else {
-                                System.out.println("Error: Tiene que ingresar un número válido.");
-                                scanner.next(); 
-                            }
-                        }
+                        // 1. Datos básicos
+                        System.out.print("Ingrese el ID del Usuario: ");
+                        long idUsu = scanner.nextLong();
                         scanner.nextLine();
 
                         Usuario usu = new Usuario();
@@ -777,58 +589,26 @@ public class Main {
                         Pedido nuevoPedido = new Pedido();
                         nuevoPedido.setUsuario(usu);
                         nuevoPedido.setFecha(java.time.LocalDate.now());
-                        nuevoPedido.setEstado(Estado.PENDIENTE); 
-                        
-                        // 2. Seleccion de Forma de Pago
-                        int opcPago = 0;
-                        while (opcPago < 1 || opcPago > 3) {
-                            System.out.println("Forma de pago: 1. EFECTIVO, 2. TARJETA, 3. TRANSFERENCIA");
-                            System.out.print("Opción: ");
-                            if (scanner.hasNextInt()) {
-                                opcPago = scanner.nextInt();
-                                if (opcPago < 1 || opcPago > 3) {
-                                    System.out.println("Error: Seleccione una opción válida (1, 2 o 3).");
-                                }
-                            } else {
-                                System.out.println("Error: Tiene que ingresar un número válido.");
-                                scanner.next(); 
-                            }
-                        }
-                        scanner.nextLine(); 
+                        nuevoPedido.setEstado(Estado.PENDIENTE); // O el estado inicial que usen
 
+                        // 2. Selección de Forma de Pago
+                        System.out.println("Forma de pago: 1. EFECTIVO, 2. TARJETA, 3. TRANSFERENCIA");
+                        int opcPago = scanner.nextInt();
+                        scanner.nextLine();
                         nuevoPedido.setPago(opcPago == 1 ? FormaPago.EFECTIVO
                                 : (opcPago == 2 ? FormaPago.TARJETA : FormaPago.TRANSFERENCIA));
-                        
+
                         // 3. Carga de productos
                         List<DetallePedido> detalles = new ArrayList<>();
                         double totalPedido = 0;
                         boolean agregar = true;
 
                         while (agregar) {
-                            long idProd = -1;
-                            while (idProd < 0) {
-                                System.out.print("Ingrese ID del producto: ");
-                                if (scanner.hasNextLong()) {
-                                    idProd = scanner.nextLong();
-                                    if (idProd < 0) System.out.println("Error: El ID no puede ser negativo.");
-                                } else {
-                                    System.out.println("Error: El ID del producto debe ser un número.");
-                                    scanner.next(); 
-                                }
-                            }
-                                
-                            int cant = 0;
-                            while (cant <= 0) {
-                                System.out.print("Cantidad: ");
-                                if (scanner.hasNextInt()) {
-                                    cant = scanner.nextInt();
-                                    if (cant <= 0) System.out.println("Error: La cantidad debe ser mayor a cero.");
-                                } else {
-                                    System.out.println("Error: Tiene que ingresar un número válido.");
-                                    scanner.next();
-                                }
-                            }
-                            scanner.nextLine(); 
+                            System.out.print("Ingrese ID del producto: ");
+                            long idProd = scanner.nextLong();
+                            System.out.print("Cantidad: ");
+                            int cant = scanner.nextInt();
+                            scanner.nextLine();
 
                             Producto prod = productoService.readByID(idProd);
 
@@ -854,104 +634,67 @@ public class Main {
                             agregar = scanner.nextLine().equalsIgnoreCase("S");
                         }
 
-                        if (!detalles.isEmpty()) {
-                            nuevoPedido.setDetalles(detalles);
-                            nuevoPedido.setTotal(totalPedido);
+                        nuevoPedido.setDetalles(detalles);
+                        nuevoPedido.setTotal(totalPedido);
 
-                            // 4: Guardar
-                            pedidoService.create(nuevoPedido);
-                            System.out.println("Pedido guardado con éxito por un total de: $" + totalPedido);
-                        } else {
-                            System.out.println("Cancelado: El pedido no se guardó porque no se agregaron productos.");
-                        }
+                        // 4. Guardar
+                        pedidoService.create(nuevoPedido);
+                        System.out.println("Pedido guardado con éxito por un total de: $" + totalPedido);
                         break;
-                    
+
                     case 3:
                         System.out.println("\n--- MODIFICAR ESTADO/PAGO DE PEDIDO ---");
-                        long idPedModificar = -1;
-                        while (idPedModificar < 0) {
-                            System.out.print("Ingrese el ID del pedido a modificar: ");
-                            if (scanner.hasNextLong()) {
-                                idPedModificar = scanner.nextLong();
-                                if (idPedModificar < 0) System.out.println("Error: El ID no puede ser negativo.");
-                            } else {
-                                System.out.println("Error: Ingrese un ID numérico válido.");
-                                scanner.next();
-                            }
-                        }
-                            scanner.nextLine();
+                        System.out.print("Ingrese el ID del pedido a modificar: ");
+                        long idModificar = scanner.nextLong();
+                        scanner.nextLine();
 
                         // 1. Buscamos el pedido en la BD
-                        Pedido pedidoEditar = pedidoService.readByID(idPedModificar);
+                        Pedido pedidoEditar = pedidoService.readByID(idModificar);
 
                         if (pedidoEditar != null) {
                             System.out.println("Pedido encontrado. Estado actual: " + pedidoEditar.getEstado() +
                                     " | Pago actual: " + pedidoEditar.getPago());
-                            
-                             // 2. Modificar Estado
-                            int opcEstado = -1;
-                            while(opcEstado < 0 || opcEstado > 4){
-                                System.out.println("Seleccione nuevo Estado: 1. PENDIENTE, 2. CONFIRMADO, 3. TERMINADO, 4. CANCELADO");
-                                System.out.print("Opción (0 para mantener actual): ");
-                                if(scanner.hasNextInt()){
-                                    opcEstado = scanner.nextInt();
-                                    if(opcEstado < 0 || opcEstado > 4) System.out.println("Error: Seleccione entre 0 y 4.");
-                                } else {
-                                    System.out.println("Error: Tiene que ingresar un número válido.");
-                                    scanner.next();
-                                }
-                            }
+
+                            // 2. Modificar Estado
+                            System.out.println(
+                                    "Seleccione nuevo Estado: 1. PENDIENTE, 2. CONFIRMADO, 3. TERMINADO, 4. CANCELADO");
+                            System.out.print("Opción (0 para mantener actual): ");
+                            int opcEstado = scanner.nextInt();
                             scanner.nextLine();
 
                             if (opcEstado >= 1 && opcEstado <= 4) {
                                 Estado[] estados = Estado.values();
                                 pedidoEditar.setEstado(estados[opcEstado - 1]);
                             }
-                            
+
                             // 3. Modificar Forma de Pago
-                            opcPago = -1;
-                            while(opcPago < 0 || opcPago > 3){
-                                System.out.println("Seleccione nueva Forma de Pago: 1. EFECTIVO, 2. TARJETA, 3. TRANSFERENCIA");
-                                System.out.print("Opción (0 para mantener actual): ");
-                                if(scanner.hasNextInt()){
-                                    opcPago = scanner.nextInt();
-                                    if(opcPago < 0 || opcPago > 3) System.out.println("Error: Seleccione entre 0 y 3.");
-                                } else {
-                                    System.out.println("Error: Tiene que ingresar un número válido.");
-                                    scanner.next();
-                                }
-                            }
+                            System.out.println(
+                                    "Seleccione nueva Forma de Pago: 1. EFECTIVO, 2. TARJETA, 3. TRANSFERENCIA");
+                            System.out.print("Opción (0 para mantener actual): ");
+                             opcPago = scanner.nextInt();
                             scanner.nextLine();
 
                             if (opcPago >= 1 && opcPago <= 3) {
                                 FormaPago[] pagos = FormaPago.values();
                                 pedidoEditar.setPago(pagos[opcPago - 1]);
                             }
-                            
+
                             // 4. Guardamos los cambios
                             pedidoService.update(pedidoEditar);
                             System.out.println("¡Pedido actualizado correctamente!");
                         } else {
-                            System.out.println("Error: No se encontró un pedido activo con el ID: " + idPedModificar);
+                            System.out.println("Error: No se encontró un pedido activo con el ID: " + idModificar);
                         }
-                            break;
+
+                        break;
 
                     case 4:
                         System.out.println("\n--- CANCELAR/ELIMINAR PEDIDO ---");
-                        long idPedEliminar = -1;
-                        while (idPedEliminar < 0) {
-                            System.out.print("Ingrese el ID del pedido a eliminar: ");
-                            if (scanner.hasNextLong()) {
-                                idPedEliminar = scanner.nextLong();
-                                if (idPedEliminar < 0) System.out.println("Error: El ID no puede ser negativo.");
-                            } else {
-                                System.out.println("Error: Ingrese un ID numérico válido.");
-                                scanner.next();
-                            }
-                        }
+                        System.out.print("Ingrese el ID del pedido a eliminar: ");
+                        long idEliminar = scanner.nextLong();
                         scanner.nextLine();
 
-                        Pedido pedidoEliminar = pedidoService.readByID(idPedEliminar);
+                        Pedido pedidoEliminar = pedidoService.readByID(idEliminar);
 
                         if (pedidoEliminar != null) {
                             System.out.print("¿Seguro que desea eliminar el pedido #" + pedidoEliminar.getId()
@@ -959,13 +702,12 @@ public class Main {
                             String confirma = scanner.nextLine();
 
                             if (confirma.equalsIgnoreCase("S")) {
-                                pedidoService.delete(idPedEliminar);
-                                System.out.println("Pedido eliminado.");
+                                pedidoService.delete(idEliminar);
                             } else {
                                 System.out.println("Operación cancelada.");
                             }
                         } else {
-                            System.out.println("No se encontró un pedido activo con el ID: " + idPedEliminar);
+                            System.out.println("No se encontró un pedido activo con el ID: " + idEliminar);
                         }
                         break;
 
