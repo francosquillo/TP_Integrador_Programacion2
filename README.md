@@ -20,7 +20,33 @@ port=3306
 Luego si todo salio bien el codigo ya deberia poder andar perfectamente
 
 ## -Guia de ejecucion
+Al ejecutarse el codigo se abrira un menu con 5 opciones
+1-Gestion de categorias
+2-Gestion de productos
+3-Gestion de usuarios
+4-Gestion de pedidos
+0-Salir
+
+Al seleccionar cualquier opcion excepto salir se abrira otro menu como este:
+1-Listar
+2-Crear
+3-Editar
+4-Eliminar
+
+Si se selecciona la opcion 1:
+Se mostraran todos los objetos correspondientes a la categoria elegida (categoria, producto, ususario, pedido)
+
+Si se selecciona la opcion 2:
+Se le pedira al ususario ingresar los atributos de la categoria elegida y si en algun atributo se ingresa algun dato no valido se cancela la creacion
+
+Si se selecciona la opcion 3:
+Se le pedira al usuario que ingrese el id del objeto a modificar y se le pedira al usuario que ingrese los nuevos atributos
+
+Si se selecciona la opcion 4:
+Se le pedira al ususario que ingrese el id del objeto a borrar y el objeto sera borrado
 
 ## -Datos de prueba
+-Usuarios
 
+Augusto ingrassia, admin@aethergames.com, 2615555555, 123456, ADMIN
 ## -Link video
