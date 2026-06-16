@@ -130,9 +130,9 @@ INSERT INTO pedido (id_pedido,eliminado,createdAt,fecha,estado,total,forma_Pago,
 (7,0,'2026-06-15 23:45:30','2026-02-08','CONFIRMADO',2250,'TARJETA',7);
 
 INSERT INTO detalle_pedido (id_detalle,eliminado,createdAt,cantidad,subtotal,id_pedido,id_producto) VALUES 
-(5,0,'2026-06-15 10:20:00',1,1500,7,5),
+(5,0,'2026-06-15 10:20:00',1,2250,7,5),
 (6,0,'2026-02-01 21:10:45',1,3000,6,6),
-(7,0,'2026-01-01 05:00:00',1,4500,5,7);
+(7,0,'2026-01-01 05:00:00',1,1500,5,7);
 
 --
 -- Índices para tablas volcadas
