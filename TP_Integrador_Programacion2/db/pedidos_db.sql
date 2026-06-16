@@ -106,11 +106,33 @@ CREATE TABLE `usuario` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Volcado de datos para la tabla `usuario`
+-- Volcado de datos
 --
 
-INSERT INTO `usuario` (`id_usuario`, `eliminado`, `createdAt`, `nombre`, `apellido`, `mail`, `celular`, `contrasenia`, `rol`) VALUES
-(4, 0, '2026-06-01 23:09:42', 'Augusto', 'Ingrassia', 'admin@aethergames.com', '2615555555', '123456', 'ADMIN');
+INSERT INTO usuario (id_usuario, eliminado, createdAt, nombre, apellido, mail, celular, contrasenia, rol) VALUES
+(5, 0, '2026-06-01 23:09:42', 'Augusto', 'Ingrassia', 'admin@aethergames.com', '2615555555', '123456', 'ADMIN'),
+(6,0, '2026-06-01 23:09:42', 'Hernesto', 'Martinez', 'HerMartinez@aethergames.com', '2613253492', 'Contraseña', 'ADMIN'),
+(7,0, '2026-06-01 23:09:42', 'Estela', 'Rios', 'RiosEs@aethergames.com', '2614937264', 'Rios09','ADMIN');
+
+INSERT INTO categoria (id_categoria,eliminado,createdAt,nombre,descripcion) VALUES
+(5,0,'2026-06-15 10:00:00','Bebidas','Bebidas frías y calientes'),
+(6,0,'2026-06-15 10:00:00','Plato principal','Plato fuerte de la comida'),
+(7,0,'2026-06-15 10:00:00','Postre','Refrigerio dulce');
+
+INSERT INTO producto (id_producto,eliminado,createdAt,nombre,precio,descripcion,stock,imagen,disponible,id_categoria)VALUES 
+(5,0,'2026-06-15 10:10:00','Coca Cola 500ml',1500,'Gaseosa',100,1,1,5),
+(6,0,'2026-06-15 10:10:00','Helado','200','Helado chico',150,1,1,7),
+(7,0,'2026-06-15 10:10:00','Hamburguesa simple',300,'Hamburgesa con queso',300,1,1,6);
+
+INSERT INTO pedido (id_pedido,eliminado,createdAt,fecha,estado,total,forma_Pago,id_usuario)VALUES 
+(5,0,'2026-06-15 10:15:00','2026-06-15','PENDIENTE',1500,'EFECTIVO',6),
+(6,0,'2026-06-10 10:00:00','2026-06-01','CANCELADO',3000,'TRANSFERENCIA',5),
+(7,0,'2026-06-15 23:45:30','2026-02-08','CONFIRMADO',2250,'TARJETA',7);
+
+INSERT INTO detalle_pedido (id_detalle,eliminado,createdAt,cantidad,subtotal,id_pedido,id_producto) VALUES 
+(5,0,'2026-06-15 10:20:00',1,1500,7,5),
+(6,0,'2026-02-01 21:10:45',1,3000,6,6),
+(7,0,'2026-01-01 05:00:00',1,4500,5,7);
 
 --
 -- Índices para tablas volcadas
