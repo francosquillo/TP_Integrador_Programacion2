@@ -46,7 +46,35 @@ Si se selecciona la opcion 4:
 Se le pedira al ususario que ingrese el id del objeto a borrar y el objeto sera borrado
 
 ## -Datos de prueba
+-Categorias
+
+Bebidas, Bebidas frías y calientes
+
+Plato principal, Plato fuerte de la comida
+
+Postre, Refrigerio dulce
+
+-Productos
+
+Coca Cola 500ml, 1500, Gaseosa, 100
+
+Helado, 200, Helado chico, 150
+
+Hamburguesa simple, 300, Hamburgesa con queso, 300
 -Usuarios
 
-Augusto ingrassia, admin@aethergames.com, 2615555555, 123456, ADMIN
+Augusto, ingrassia, admin@aethergames.com, 2615555555, 123456, ADMIN
+
+Hernesto, Martinez, HerMartinez@aethergames.com, 2613253492, Contraseña, ADMIN
+
+Estela, Rios, RiosEs@aethergames.com, 2614937264, Rios09, ADMIN
+
+-Pedidos
+
+2026-06-15, PENDIENTE, 1500, EFECTIVO
+
+2026-06-01, CANCELADO, 3000, TRANSFERENCIA
+
+2026-02-08, CONFIRMADO, 2250, TARJETA
+
 ## -Link video
