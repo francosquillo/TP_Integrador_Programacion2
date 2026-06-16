@@ -669,11 +669,19 @@ public class Main {
                         nuevoPedido.setDetalles(detalles);
                         nuevoPedido.setTotal(totalPedido);
 
-                        // 4. Guardar
-                        pedidoService.create(nuevoPedido);
-                        System.out.println("Pedido guardado con éxito por un total de: $" + totalPedido);
-                        break;
+                        // Verificamos si se agregó al menos un producto antes de guardar
+                        if (detalles.isEmpty()) {
+                            System.out.println("Operación cancelada: No se agregaron productos válidos al pedido.");
+                        } else {
+                            nuevoPedido.setDetalles(detalles);
+                            nuevoPedido.setTotal(totalPedido);
 
+                            // 4. Guardar
+                            pedidoService.create(nuevoPedido);
+                            System.out.println("Pedido guardado con éxito por un total de: $" + totalPedido);
+                        }
+                        break;
+                        
                     case 3:
                         System.out.println("\n--- MODIFICAR ESTADO/PAGO DE PEDIDO ---");
                         System.out.print("Ingrese el ID del pedido a modificar: ");
@@ -703,7 +711,7 @@ public class Main {
                             System.out.println(
                                     "Seleccione nueva Forma de Pago: 1. EFECTIVO, 2. TARJETA, 3. TRANSFERENCIA");
                             System.out.print("Opción (0 para mantener actual): ");
-                             opcPago = scanner.nextInt();
+                            opcPago = scanner.nextInt();
                             scanner.nextLine();
 
                             if (opcPago >= 1 && opcPago <= 3) {
