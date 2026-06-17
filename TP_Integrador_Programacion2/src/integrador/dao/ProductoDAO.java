@@ -11,7 +11,7 @@ import entities.Producto;
 
 public class ProductoDAO implements BaseDAO<Producto> {
 
-@Override
+    @Override
     public void create(Producto entity){
         String sql = "INSERT INTO producto (eliminado, createdAt, nombre, precio, descripcion, stock, imagen, disponible, id_categoria) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         

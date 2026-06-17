@@ -274,77 +274,45 @@ public class Main {
                     case 2:
                         System.out.println("\n--- CREAR PRODUCTO ---");
 
-                        
-                        String nombre = "";
-                        while (nombre.trim().isEmpty()) {
-                            System.out.print("Nombre: ");
-                            nombre = scanner.nextLine().trim();
-                            if (nombre.trim().isEmpty()) {
-                                System.out.println("Error: El nombre no puede estar vacío.");
-                            }
-                        }
+                        System.out.print("Nombre: ");
+                        String nombre = scanner.nextLine();
 
-                        
                         System.out.print("Descripción: ");
-                        String descripcion = scanner.nextLine().trim();
+                        String descripcion = scanner.nextLine();
 
-                        
-                        double precio = -1;
-                        while (precio < 0) {
-                            System.out.print("Precio: ");
-                            while (!scanner.hasNextDouble()) {
-                                System.out.println("Error: Ingrese un número válido para el precio.");
-                                scanner.next();
-                            }
-                            precio = scanner.nextDouble();
-                            scanner.nextLine();
-                            if (precio < 0) {
-                                System.out.println("Error: El precio no puede ser negativo. Intente de nuevo.");
-                            }
-                        }
+                        System.out.print("Precio: ");
+                        double precio = scanner.nextDouble();
 
-                        
-                        int stock = -1;
-                        while (stock < 0) {
-                            System.out.print("Stock: ");
-                            while (!scanner.hasNextInt()) {
-                                System.out.println("Error: Ingrese un número entero para el stock.");
-                                scanner.next();
-                            }
-                            stock = scanner.nextInt();
-                            scanner.nextLine();
-                            if (stock < 0) {
-                                System.out.println("Error: El stock no puede ser negativo. Intente de nuevo.");
-                            }
-                        }
+                        System.out.print("Stock: ");
+                        int stock = scanner.nextInt();
+                        scanner.nextLine();
 
-                        
+                        // Pedir categoría
                         System.out.print("ID de categoría: ");
-                        while (!scanner.hasNextLong()) {
-                            System.out.println("Error: Ingrese un ID numérico válido.");
-                            scanner.next();
-                        }
                         Long idCategoria = scanner.nextLong();
                         scanner.nextLine();
 
                         Categoria categoria = categoriaService.readByID(idCategoria);
+
                         if (categoria == null) {
-                            System.out.println("Error: Categoría no encontrada. No se creó el producto.");
+                            System.out.println("Categoría no encontrada.");
                             break;
                         }
 
-                        
                         Producto nuevoProducto = new Producto();
+
                         nuevoProducto.setNombre(nombre);
                         nuevoProducto.setDescripcion(descripcion);
                         nuevoProducto.setPrecio(precio);
                         nuevoProducto.setStock(stock);
+
+                        // Asignar categoría al producto
                         nuevoProducto.setCategoria(categoria);
 
                         productoService.create(nuevoProducto);
+
                         System.out.println("Producto creado correctamente.");
                         break;
-                    
 
                     case 3:
 
@@ -669,19 +637,11 @@ public class Main {
                         nuevoPedido.setDetalles(detalles);
                         nuevoPedido.setTotal(totalPedido);
 
-                        // Verificamos si se agregó al menos un producto antes de guardar
-                        if (detalles.isEmpty()) {
-                            System.out.println("Operación cancelada: No se agregaron productos válidos al pedido.");
-                        } else {
-                            nuevoPedido.setDetalles(detalles);
-                            nuevoPedido.setTotal(totalPedido);
-
-                            // 4. Guardar
-                            pedidoService.create(nuevoPedido);
-                            System.out.println("Pedido guardado con éxito por un total de: $" + totalPedido);
-                        }
+                        // 4. Guardar
+                        pedidoService.create(nuevoPedido);
+                        System.out.println("Pedido guardado con éxito por un total de: $" + totalPedido);
                         break;
-                        
+
                     case 3:
                         System.out.println("\n--- MODIFICAR ESTADO/PAGO DE PEDIDO ---");
                         System.out.print("Ingrese el ID del pedido a modificar: ");
@@ -711,7 +671,7 @@ public class Main {
                             System.out.println(
                                     "Seleccione nueva Forma de Pago: 1. EFECTIVO, 2. TARJETA, 3. TRANSFERENCIA");
                             System.out.print("Opción (0 para mantener actual): ");
-                            opcPago = scanner.nextInt();
+                             opcPago = scanner.nextInt();
                             scanner.nextLine();
 
                             if (opcPago >= 1 && opcPago <= 3) {

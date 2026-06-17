@@ -15,24 +15,6 @@ public class UsuarioService implements GenericService<Usuario> {
             System.out.println("Error: El correo electronico no es valido.");
             return;
         }
-        if (entity.getNombre() == null || entity.getNombre().trim().isEmpty()) {
-            System.out.println("Error: El nombre es obligatorio.");
-        return;
-        }
-
-        if (!entity.getNombre().matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
-            System.out.println("Error: El apellido no puede contener números ni caracteres especiales.");
-        return;
-        }
-        if (entity.getApellido() == null || entity.getApellido().trim().isEmpty()) {
-            System.out.println("Error: El apellido es obligatorio.");
-        return;
-        }
-
-        if (!entity.getApellido().matches("[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+")) {
-            System.out.println("Error: El apellido no puede contener números ni caracteres especiales.");
-        return;
-        }
 
         if (entity.getContrasenia() == null || entity.getContrasenia().length() < 4) {
             System.out.println("Error: La contrasenia debe tener al menos 4 caracteres.");
