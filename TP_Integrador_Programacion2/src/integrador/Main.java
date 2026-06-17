@@ -589,7 +589,8 @@ public class Main {
                         Pedido nuevoPedido = new Pedido();
                         nuevoPedido.setUsuario(usu);
                         nuevoPedido.setFecha(java.time.LocalDate.now());
-                        nuevoPedido.setEstado(Estado.PENDIENTE); // O el estado inicial que usen
+                        nuevoPedido.setEstado(Estado.PENDIENTE);
+                        nuevoPedido.setDetalles(new ArrayList<>());
 
                         // 2. Selección de Forma de Pago
                         System.out.println("Forma de pago: 1. EFECTIVO, 2. TARJETA, 3. TRANSFERENCIA");
@@ -599,8 +600,6 @@ public class Main {
                                 : (opcPago == 2 ? FormaPago.TARJETA : FormaPago.TRANSFERENCIA));
 
                         // 3. Carga de productos
-                        List<DetallePedido> detalles = new ArrayList<>();
-                        double totalPedido = 0;
                         boolean agregar = true;
 
                         while (agregar) {
@@ -613,19 +612,18 @@ public class Main {
                             Producto prod = productoService.readByID(idProd);
 
                             if (prod != null) {
-                                // CALCULAMOS EL SUBTOTAL USANDO EL PRECIO DEL PRODUCTO
-                                double subtotal = prod.getPrecio() * cant;
-
-                                DetallePedido det = new DetallePedido();
-                                det.setProducto(prod);
-                                det.setCantidad(cant);
-                                det.setSubtotal(subtotal);
-
-                                detalles.add(det);
-                                totalPedido += subtotal;
-
-                                System.out.println(
-                                        "Producto agregado: " + prod.getNombre() + " | Subtotal: $" + subtotal);
+                                try {
+                                    DetallePedido det = new DetallePedido();
+                                    det.setProducto(prod);
+                                    det.setCantidad(cant);
+                                    // addDetallePedido() calcula subtotal y llama a calcularTotal() (interfaz Calculable)
+                                    nuevoPedido.addDetallePedido(det);
+                                    System.out.println("Producto agregado: " + prod.getNombre() + " | Subtotal: $" + (prod.getPrecio() * cant));
+                                } catch (Exception e) {
+                                    System.out.println("Error al agregar detalle: " + e.getMessage());
+                                    nuevoPedido = null; // ROLLBACK: se cancela el pedido en memoria
+                                    break;
+                                }
                             } else {
                                 System.out.println("Error: Producto no encontrado. No se agregó al pedido.");
                             }
@@ -634,14 +632,15 @@ public class Main {
                             agregar = scanner.nextLine().equalsIgnoreCase("S");
                         }
 
-                        nuevoPedido.setDetalles(detalles);
-                        nuevoPedido.setTotal(totalPedido);
-
-                        // 4. Guardar
-                        pedidoService.create(nuevoPedido);
-                        System.out.println("Pedido guardado con éxito por un total de: $" + totalPedido);
+                        // 4. Guardar solo si no hubo rollback
+                        if (nuevoPedido != null) {
+                            // El total ya lo calculó calcularTotal() dentro de addDetallePedido()
+                            pedidoService.create(nuevoPedido);
+                            System.out.println("Pedido guardado con éxito. Total: $" + nuevoPedido.getTotal());
+                        } else {
+                            System.out.println("No se guardó ningún pedido.");
+                        }
                         break;
-
                     case 3:
                         System.out.println("\n--- MODIFICAR ESTADO/PAGO DE PEDIDO ---");
                         System.out.print("Ingrese el ID del pedido a modificar: ");

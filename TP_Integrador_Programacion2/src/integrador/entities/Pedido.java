@@ -32,7 +32,10 @@ public class Pedido extends Base implements Calculable {
     }
 
     public void addDetallePedido(DetallePedido detalle) {
-
+        
+        if (detalle.getCantidad() <= 0) {
+        throw new IllegalArgumentException("La cantidad debe ser mayor a cero.");
+    }
         double subtotalCalculado = detalle.getCantidad() * detalle.getProducto().getPrecio();
 
         detalle.setSubtotal(subtotalCalculado);
