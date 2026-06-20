@@ -77,3 +77,5 @@ Estela, Rios, RiosEs@aethergames.com, 2614937264, Rios09, ADMIN
 
 2026-02-08, CONFIRMADO, 2250, TARJETA
 
+## Link video
+https://youtu.be/oI6XfwL5WVs?feature=shared
